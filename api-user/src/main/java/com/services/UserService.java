@@ -1,25 +1,14 @@
-package com.example.demo.service;
+package com.services;
 
-import com.example.demo.dto.UserDto;
+import com.dtos.*;
+
 import java.util.List;
 
-/**
- * Interface définissant le contrat pour la gestion des utilisateurs.
- */
 public interface UserService {
-
-    /**
-     * Crée un nouvel utilisateur.
-     */
-    UserDto createUser(UserDto userDto);
-
-    /**
-     * Récupère tous les utilisateurs.
-     */
     List<UserDto> getAllUsers();
-
-    /**
-     * Récupère un utilisateur par son pseudonyme.
-     */
+    UserDto createUser(UserCreateDto userCreateDto);
     UserDto getUserByPseudo(String pseudo);
+    UserDto updateUser(String pseudo, UserUpdateDto userUpdateDto);
+    void deleteUser(String pseudo);
+    AuthTokenDto login(UserLoginDto loginDto);
 }

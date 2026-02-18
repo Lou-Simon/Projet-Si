@@ -1,22 +1,13 @@
-package com.example.demo.mapper;
+package com.mappers;
 
-import com.example.demo.dto.UserDto;
-import com.example.demo.entity.User;
+import com.dtos.UserCreateDto;
+import com.dtos.UserDto;
+import com.entities.User;
 import org.springframework.stereotype.Component;
 
-/**
- * Composant responsable de la conversion entre l'entité {@link User}
- * et son DTO correspondant {@link UserDto}.
- */
 @Component
 public class UserMapper {
 
-    /**
-     * Convertit une entité User en UserDto.
-     *
-     * @param user L'entité utilisateur à convertir.
-     * @return Le DTO correspondant, ou null si l'entrée est null.
-     */
     public UserDto toDto(User user) {
         if (user == null) {
             return null;
@@ -26,27 +17,21 @@ public class UserMapper {
                 .nom(user.getNom())
                 .prenom(user.getPrenom())
                 .age(user.getAge())
-                .adresses(user.getAdresses())
+                .adresse(user.getAdresse())
                 .build();
     }
 
-    /**
-     * Convertit un UserDto en entité User.
-     * Note: L'ID technique n'est pas mappé ici car il est généré par la BDD.
-     *
-     * @param userDto Le DTO utilisateur à convertir.
-     * @return L'entité correspondante, ou null si l'entrée est null.
-     */
-    public User toEntity(UserDto userDto) {
-        if (userDto == null) {
+    public User toEntity(UserCreateDto dto) {
+        if (dto == null) {
             return null;
         }
         return User.builder()
-                .pseudo(userDto.getPseudo())
-                .nom(userDto.getNom())
-                .prenom(userDto.getPrenom())
-                .age(userDto.getAge())
-                .adresses(userDto.getAdresses())
+                .pseudo(dto.getPseudo())
+                .nom(dto.getNom())
+                .prenom(dto.getPrenom())
+                .age(dto.getAge())
+                .adresse(dto.getAdresse())
+                .motDePasse(dto.getMotDePasse())
                 .build();
     }
 }

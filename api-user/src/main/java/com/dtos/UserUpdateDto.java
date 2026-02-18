@@ -6,10 +6,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
-    private String pseudo;
+public class UserUpdateDto {
     private String nom;
     private String prenom;
     private Integer age;
     private String adresse;
+    private String motDePasse;
 }
