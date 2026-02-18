@@ -1,0 +1,73 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        # ===== USER API =====
+        - id: users-api
+          uri: http://localhost:8001
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - StripPrefix=1
+
+        # ===== ARTIST API =====
+        - id: artist-api
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/artist/**
+          filters:
+            - StripPrefix=1
+
+        # ===== REVIEW API =====
+        - id: review-api
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/reviews/**
+          filters:
+            - StripPrefix=1
+            -
+
+            # ===== SCRAPING API =====
+        - id: scraping-movies
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/movies/**
+          filters:
+            - StripPrefix=1
+            -
+        - id: scraping-artists
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/artists/**
+          filters:
+            - StripPrefix=1
+
+
+      # Configuration CORS globale
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+              - OPTIONS
+            allowedHeaders: "*"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG

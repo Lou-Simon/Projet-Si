@@ -1,0 +1,774 @@
+openapi: 3.0.3
+info:
+  title: VOD API Gateway
+  description: |
+    API Gateway centralisée pour le système VOD (Video On Demand).
+    Cette gateway route les requêtes vers 4 microservices :
+    - **User API** (port 8001) : Gestion des utilisateurs et authentification
+    - **Artist API** (port 8002) : Gestion des artistes
+    - **Review API** (port 8003) : Gestion des avis/critiques
+    - **Scraping API** (port 8004) : Récupération d'informations films/artistes
+    
+    **Architecture:**
+    - Gateway: http://localhost:8080
+    - Frontend Vue.js: http://localhost:5173 ou 3000
+    
+    **Authentification:**
+    Routes publiques et protégées par JWT Bearer token.
+  version: 1.0.0
+  contact:
+    name: Support VOD
+    email: support@vod.com
+
+servers:
+  - url: http://localhost:8080/api
+    description: Gateway de développement
+  - url: https://api.vod.com/api
+    description: Gateway de production
+
+tags:
+  - name: user
+    description: Gestion des utilisateurs et authentification
+  - name: artist
+    description: Gestion des artistes
+  - name: review
+    description: Gestion des avis et critiques
+  - name: scraping
+    description: Récupération d'informations externes (films/artistes)
+
+paths:
+  # ==========================================
+  # USER API
+  # ==========================================
+  /user:
+    get:
+      tags:
+        - user
+      summary: Liste tous les utilisateurs
+      description: |
+        Renvoie la liste de tous les utilisateurs (admin uniquement).
+        **Route protégée** - Nécessite authentification admin.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Liste d'utilisateurs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    post:
+      tags:
+        - user
+      summary: Créer un nouveau compte utilisateur
+      description: |
+        Permet à un nouvel utilisateur de s'inscrire sur la plateforme VOD.
+        **Route publique** - Pas d'authentification requise.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+            example:
+              pseudo: "johndoe"
+              nom: "Doe"
+              prenom: "John"
+              age: 25
+              adresse: "123 rue Example"
+              motDePasse: "SecurePass123!"
+      responses:
+        '201':
+          description: Utilisateur créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Conflit - Le pseudo existe déjà
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /user/login:
+    post:
+      tags:
+        - user
+      summary: Connexion d'un utilisateur
+      description: |
+        Authentifie un utilisateur avec son pseudo et mot de passe.
+        **Route publique** - Retourne un token JWT.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+            example:
+              pseudo: "johndoe"
+              motDePasse: "SecurePass123!"
+      responses:
+        '200':
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+              example:
+                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                user:
+                  pseudo: "johndoe"
+                  nom: "Doe"
+                  prenom: "John"
+                  age: 25
+                  adresse: "123 rue Example"
+        '401':
+          description: Identifiants incorrects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /user/{pseudo}:
+    get:
+      tags:
+        - user
+      summary: Récupérer un utilisateur par son pseudo
+      description: |
+        Renvoie les informations d'un utilisateur spécifique.
+        **Route publique** - Profil public.
+      parameters:
+        - $ref: '#/components/parameters/PseudoParam'
+      responses:
+        '200':
+          description: Informations de l'utilisateur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - user
+      summary: Met à jour un utilisateur
+      description: |
+        Met à jour les informations d'un utilisateur spécifique.
+        **Route protégée** - Vous ne pouvez modifier que votre propre compte.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PseudoParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: Utilisateur mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - user
+      summary: Supprime un utilisateur
+      description: |
+        Supprime un utilisateur spécifique du système.
+        **Route protégée** - Admin uniquement.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PseudoParam'
+      responses:
+        '200':
+          description: Utilisateur supprimé avec succès
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ==========================================
+  # ARTIST API
+  # ==========================================
+  /artist:
+    get:
+      tags:
+        - artist
+      summary: Liste tous les artistes
+      description: |
+        Renvoie la liste de tous les artistes dans la base de données.
+        **Route publique** - Pas d'authentification requise.
+      responses:
+        '200':
+          description: Liste d'artistes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Artist'
+              example:
+                - id: "1"
+                  nom: "Christopher Nolan"
+                  genre: "Réalisateur"
+                  pays: "Royaume-Uni"
+                  dateNaissance: "1970-07-30"
+                  biographie: "Réalisateur britannique..."
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - artist
+      summary: Ajoute un nouvel artiste
+      description: |
+        Ajoute un nouvel artiste à la base de données.
+        **Route protégée** - Nécessite authentification.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Artist'
+      responses:
+        '201':
+          description: Artiste créé avec succès
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /artist/{id}:
+    get:
+      tags:
+        - artist
+      summary: Trouver un artiste par son ID
+      description: |
+        Renvoie un artiste spécifique identifié par son ID.
+        **Route publique** - Pas d'authentification requise.
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Détails de l'artiste
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artist'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - artist
+      summary: Met à jour un artiste
+      description: |
+        Met à jour les informations d'un artiste spécifique.
+        **Route protégée** - Nécessite authentification.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Artist'
+      responses:
+        '200':
+          description: Artiste mis à jour avec succès
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - artist
+      summary: Supprime un artiste
+      description: |
+        Supprime un artiste spécifique de la base de données.
+        **Route protégée** - Nécessite authentification.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Artiste supprimé avec succès
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ==========================================
+  # REVIEW API
+  # ==========================================
+  /reviews:
+    get:
+      tags:
+        - review
+      summary: Liste toutes les reviews
+      description: |
+        Renvoie la liste de toutes les reviews dans la base de données.
+        **Route publique** - Pas d'authentification requise.
+      responses:
+        '200':
+          description: Liste de reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+
+    post:
+      tags:
+        - review
+      summary: Ajoute une nouvelle review
+      description: |
+        Ajoute une nouvelle review à la base de données.
+        **Route protégée** - Nécessite authentification.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'
+            example:
+              filmId: "tt1375666"
+              utilisateurId: "johndoe"
+              note: 9.5
+              titre: "Chef-d'œuvre du cinéma"
+              commentaire: "Inception est un film extraordinaire..."
+              datePublication: "2024-02-16T10:30:00Z"
+      responses:
+        '201':
+          description: Review créée avec succès
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /reviews/{id}:
+    get:
+      tags:
+        - review
+      summary: Trouver une review par son ID
+      description: |
+        Renvoie une review spécifique identifiée par son ID.
+        **Route publique** - Pas d'authentification requise.
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Détails de la review
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - review
+      summary: Met à jour une review
+      description: |
+        Met à jour les informations d'une review spécifique.
+        **Route protégée** - Vous ne pouvez modifier que vos propres reviews.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'
+      responses:
+        '200':
+          description: Review mise à jour avec succès
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - review
+      summary: Supprime une review
+      description: |
+        Supprime une review spécifique de la base de données.
+        **Route protégée** - Vous ne pouvez supprimer que vos propres reviews.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Review supprimée avec succès
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ==========================================
+  # SCRAPING API
+  # ==========================================
+  /movies/{name}:
+    get:
+      tags:
+        - scraping
+      summary: Récupérer les infos d'un film
+      description: |
+        Récupère les informations d'un film via web scraping.
+        **Route publique** - Pas d'authentification requise.
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Le titre du film à rechercher
+          schema:
+            type: string
+          example: "Inception"
+      responses:
+        '200':
+          description: Film trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+              example:
+                title: "Inception"
+                releaseYear: 2010
+                description: "Un voleur qui s'introduit dans les rêves..."
+                director: "Christopher Nolan"
+                rating: 8.8
+        '404':
+          description: Film non trouvé
+
+  /artists/{name}:
+    get:
+      tags:
+        - scraping
+      summary: Récupérer les infos d'un artiste externe
+      description: |
+        Récupère les informations d'un artiste via web scraping.
+        **Route publique** - Pas d'authentification requise.
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Le nom de l'artiste à rechercher
+          schema:
+            type: string
+          example: "Leonardo DiCaprio"
+      responses:
+        '200':
+          description: Artiste trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScrapedArtist'
+              example:
+                name: "Leonardo DiCaprio"
+                job: "Actor"
+                birthday: "1974-11-11"
+                biography: "Acteur américain né à Los Angeles..."
+        '404':
+          description: Artiste non trouvé
+
+# ==========================================
+# COMPONENTS
+# ==========================================
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Token JWT obtenu via `/api/user/login`.
+        Format: `Authorization: Bearer <token>`
+
+  parameters:
+    PseudoParam:
+      name: pseudo
+      in: path
+      required: true
+      description: Le pseudo de l'utilisateur
+      schema:
+        type: string
+      example: "johndoe"
+
+    IdParam:
+      name: id
+      in: path
+      required: true
+      description: L'identifiant unique de la ressource
+      schema:
+        type: string
+      example: "1"
+
+  schemas:
+    # USER SCHEMAS
+    User:
+      type: object
+      properties:
+        pseudo:
+          type: string
+          description: Pseudo unique de l'utilisateur
+        nom:
+          type: string
+          description: Nom de famille
+        prenom:
+          type: string
+          description: Prénom
+        age:
+          type: integer
+          description: Âge
+        adresse:
+          type: string
+          description: Adresse
+
+    UserCreate:
+      type: object
+      required:
+        - pseudo
+        - nom
+        - prenom
+        - age
+        - adresse
+        - motDePasse
+      properties:
+        pseudo:
+          type: string
+        nom:
+          type: string
+        prenom:
+          type: string
+        age:
+          type: integer
+          minimum: 1
+        adresse:
+          type: string
+        motDePasse:
+          type: string
+          format: password
+
+    UserUpdate:
+      type: object
+      properties:
+        nom:
+          type: string
+        prenom:
+          type: string
+        age:
+          type: integer
+          minimum: 1
+        adresse:
+          type: string
+        motDePasse:
+          type: string
+          format: password
+
+    UserLogin:
+      type: object
+      required:
+        - pseudo
+        - motDePasse
+      properties:
+        pseudo:
+          type: string
+        motDePasse:
+          type: string
+          format: password
+
+    AuthToken:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Token JWT
+        user:
+          $ref: '#/components/schemas/User'
+
+    # ARTIST SCHEMAS
+    Artist:
+      type: object
+      required:
+        - id
+        - nom
+      properties:
+        id:
+          type: string
+          description: Identifiant unique
+        nom:
+          type: string
+          description: Nom de l'artiste
+        genre:
+          type: string
+          description: Genre musical ou type d'artiste
+        pays:
+          type: string
+          description: Pays d'origine
+        dateNaissance:
+          type: string
+          format: date
+          description: Date de naissance
+        biographie:
+          type: string
+          description: Biographie
+
+    # REVIEW SCHEMAS
+    Review:
+      type: object
+      required:
+        - id
+        - filmId
+        - note
+      properties:
+        id:
+          type: string
+          description: Identifiant unique de la review
+        filmId:
+          type: string
+          description: Identifiant du film concerné
+        utilisateurId:
+          type: string
+          description: Identifiant de l'utilisateur
+        note:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 10
+          description: Note (0 à 10)
+        titre:
+          type: string
+          description: Titre de la review
+        commentaire:
+          type: string
+          description: Commentaire détaillé
+        datePublication:
+          type: string
+          format: date-time
+          description: Date de publication
+
+    # SCRAPING SCHEMAS
+    Movie:
+      type: object
+      properties:
+        title:
+          type: string
+        releaseYear:
+          type: integer
+        description:
+          type: string
+        director:
+          type: string
+        rating:
+          type: number
+
+    ScrapedArtist:
+      type: object
+      properties:
+        name:
+          type: string
+        job:
+          type: string
+          enum: [Actor, Director]
+        birthday:
+          type: string
+          format: date
+        biography:
+          type: string
+
+    # ERROR SCHEMA
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Type d'erreur
+        message:
+          type: string
+          description: Message d'erreur détaillé
+        timestamp:
+          type: string
+          format: date-time
+          description: Horodatage de l'erreur
+
+  responses:
+    BadRequest:
+      description: Requête invalide
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: Non authentifié - Token manquant ou invalide
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Forbidden:
+      description: Accès interdit - Permissions insuffisantes
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Ressource non trouvée
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    InternalError:
+      description: Erreur serveur interne
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
