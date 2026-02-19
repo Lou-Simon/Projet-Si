@@ -1,2 +1,6 @@
+
+
 docker exec -it mariadb mysql -u root -p
 
+
+docker exec -it scrapping mysql -u root -p

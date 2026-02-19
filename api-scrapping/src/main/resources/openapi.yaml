@@ -1,0 +1,86 @@
+openapi: 3.1.0
+info:
+  title: Simple Movie & Artist API
+  description: API simplifiée pour récupérer des informations sur des films et des artistes.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Serveur de développement
+
+paths:
+  '/movies/{name}':
+    get:
+      summary: Récupérer les infos d'un film
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Le titre du film
+          schema:
+            type: string
+            example: "Inception"
+      responses:
+        '200':
+          description: Film trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '404':
+          description: Film non trouvé
+
+  '/artists/{name}':
+    get:
+      summary: Récupérer les infos d'un artiste
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Le nom de l'artiste
+          schema:
+            type: string
+            example: "Leonardo DiCaprio"
+      responses:
+        '200':
+          description: Artiste trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artist'
+        '404':
+          description: Artiste non trouvé
+
+components:
+  schemas:
+    Movie:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Inception"
+        releaseYear:
+          type: integer
+          example: 2010
+        description:
+          type: string
+        director:
+          type: string
+        rating:
+          type: number
+          example: 8.8
+
+    Artist:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Leonardo DiCaprio"
+        job:
+          type: string
+          enum: [Actor, Director]
+        birthday:
+          type: string
+          format: date
+        biography:
+          type: string
