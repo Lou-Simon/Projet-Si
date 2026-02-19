@@ -11,12 +11,12 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Dog {
+public class Movie {
 
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long Id;
-	private String name;
-	private String race;
-	private LocalDate birthDate;	
-	
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String title;
+    private Integer releaseYear;
+    private String description;
+    private String director;
+    private Float rating;
 }
