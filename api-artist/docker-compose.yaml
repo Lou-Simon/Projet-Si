@@ -1,0 +1,18 @@
+services:
+  db:
+    image: mariadb:latest
+    container_name: mon_mariadb
+    restart: always
+    environment:
+      # Ces variables sont OBLIGATOIRES pour l'initialisation
+      MARIADB_ROOT_PASSWORD: mdp_super_secret
+      MARIADB_DATABASE: nom_de_ma_db
+      MARIADB_USER: utilisateur
+      MARIADB_PASSWORD: mdp_utilisateur
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
