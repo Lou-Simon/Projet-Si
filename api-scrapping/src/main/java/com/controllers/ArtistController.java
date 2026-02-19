@@ -5,6 +5,7 @@ import com.services.ArtistService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/artists")
 public class ArtistController {
