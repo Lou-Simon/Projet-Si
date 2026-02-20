@@ -1,6 +1,5 @@
 package com.entities;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -12,15 +11,10 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Movie {
+public class MovieBatch {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String title;
-    private Integer releaseYear;
-    private String description;
-    private String director;
-    private List<String> actors;
-    private List<String> genres;
-    private Integer minAge;
-    private Float rating;
+    private Integer imported;
+    private Integer skipped;
+    private List<Movie> movies;
 }
