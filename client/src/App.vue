@@ -1,11 +1,13 @@
 <template>
   <main class="app-shell">
-    <RouterView />
+    <Navbar />
+
+    <section class="page-shell">
+      <RouterView />
+    </section>
   </main>
 </template>
 
-<style scoped>
-.app-shell {
-  min-height: 100vh;
-}
-</style>
+<script setup>
+import Navbar from './components/layout/Navbar.vue'
+</script>
