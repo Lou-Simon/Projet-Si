@@ -6,7 +6,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*") // pour avoir accès via le client vueJS
 @RestController
 @RequestMapping("/movies")
 public class MovieController {

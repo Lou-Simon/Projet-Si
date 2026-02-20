@@ -21,6 +21,6 @@ public class Movie {
     private String director;
     private List<String> actors;
     private List<String> genres;
-    private int minAge;
+    private Integer minAge;
     private Float rating;
 }
