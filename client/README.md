@@ -1,38 +1,25 @@
-# client
+# Client (Vue 3 + Vite)
 
-This template should help get you started developing with Vue 3 in Vite.
+Base propre pour commencer ton architecture (navbar, layouts, pages, etc.).
 
-## Recommended IDE Setup
+## Lancer le projet
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- `npm install`
+- `npm run dev`
 
-## Recommended Browser Setup
+## Structure préparée
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+- `src/assets/styles`
+- `src/components/navbar`
+- `src/components/shared`
+- `src/layouts/public`
+- `src/layouts/private`
+- `src/pages/public`
+- `src/pages/private`
+- `src/pages/errors`
+- `src/router/guards`
+- `src/router/routes`
+- `src/composables`
+- `src/services`
+- `src/stores`
+- `src/utils`
