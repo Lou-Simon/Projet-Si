@@ -1,6 +1,7 @@
 package com.entities;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,5 +19,8 @@ public class Movie {
     private Integer releaseYear;
     private String description;
     private String director;
+    private List<String> actors;
+    private List<String> genres;
+    private int minAge;
     private Float rating;
 }

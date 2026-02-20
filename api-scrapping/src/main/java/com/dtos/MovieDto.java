@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class MovieDto {
     @NotBlank(message = "Le titre est obligatoire")
@@ -17,6 +19,15 @@ public class MovieDto {
 
     @NotBlank(message = "Le réalisateur est obligatoire")
     private String director;
+
+    @NotBlank(message = "Les acteurs sont obligatoires")
+    private List<String> actors;
+
+    @NotBlank(message = "Les genres sont obligatoires")
+    private List<String> genres;
+
+    @NotNull
+    private int minAge;
 
     @NotNull
     private Float rating;
