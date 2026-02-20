@@ -1,138 +1,86 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: API de Gestion des Chiens
-  description: |
-    API REST permettant la gestion des chiens dans le système.
-    Cette API permet de créer, lire, mettre à jour et supprimer des informations sur les chiens.
+  title: Simple Movie & Artist API
+  description: API simplifiée pour récupérer des informations sur des films et des artistes.
   version: 1.0.0
-  contact:
-    name: Support API
-    email: support@example.com
 
 servers:
   - url: http://localhost:8080
-    description: Serveur de développement local
-
-tags:
-  - name: dogs
-    description: Opérations liées à la gestion des chiens
+    description: Serveur de développement
 
 paths:
-  /dogs:
+  '/movies/{name}':
     get:
-      tags:
-        - dogs
-      summary: Récupère tous les chiens
-      description: Retourne la liste complète des chiens enregistrés dans le système
-      operationId: getAllDogs
+      summary: Récupérer les infos d'un film
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Le titre du film
+          schema:
+            type: string
+            example: "Inception"
       responses:
         '200':
-          description: Liste des chiens récupérée avec succès
+          description: Film trouvé
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/DogDto'
-        '500':
-          description: Erreur serveur interne
+                $ref: '#/components/schemas/Movie'
+        '404':
+          description: Film non trouvé
 
-    post:
-      tags:
-        - dogs
-      summary: Crée un nouveau chien
-      description: Ajoute un nouveau chien dans le système
-      operationId: createDog
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DogDto'
-      responses:
-        '201':
-          description: Chien créé avec succès
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DogDto'
-        '400':
-          description: Données invalides
-        '500':
-          description: Erreur serveur interne
-
-  /dogs/{id}:
+  '/artists/{name}':
     get:
-      tags:
-        - dogs
-      summary: Récupère un chien par son ID
-      description: Retourne les détails d'un chien spécifique
-      operationId: getDogById
+      summary: Récupérer les infos d'un artiste
       parameters:
-        - name: id
+        - name: name
           in: path
-          description: ID du chien à récupérer
           required: true
+          description: Le nom de l'artiste
           schema:
-            type: integer
-            format: int64
+            type: string
+            example: "Leonardo DiCaprio"
       responses:
         '200':
-          description: Chien trouvé
+          description: Artiste trouvé
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DogDto'
+                $ref: '#/components/schemas/Artist'
         '404':
-          description: Chien non trouvé
-        '500':
-          description: Erreur serveur interne
-
-    delete:
-      tags:
-        - dogs
-      summary: Supprime un chien
-      description: Supprime un chien du système par son ID
-      operationId: deleteDog
-      parameters:
-        - name: id
-          in: path
-          description: ID du chien à supprimer
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: Chien supprimé avec succès
-          content:
-            application/json:
-              schema:
-                type: boolean
-        '404':
-          description: Chien non trouvé
-        '500':
-          description: Erreur serveur interne
+          description: Artiste non trouvé
 
 components:
   schemas:
-    DogDto:
+    Movie:
       type: object
-      description: Représentation d'un chien dans le système
       properties:
-        id:
+        title:
+          type: string
+          example: "Inception"
+        releaseYear:
           type: integer
-          format: int64
-          description: Identifiant unique du chien
-          example: 1
+          example: 2010
+        description:
+          type: string
+        director:
+          type: string
+        rating:
+          type: number
+          example: 8.8
+
+    Artist:
+      type: object
+      properties:
         name:
           type: string
-          description: Nom du chien
-          example: "Rex"
-        race:
+          example: "Leonardo DiCaprio"
+        job:
           type: string
-          description: Race du chien
-          example: "Berger Allemand"
-      required:
-        - name
-        - race 
+          enum: [Actor, Director]
+        birthday:
+          type: string
+          format: date
+        biography:
+          type: string
