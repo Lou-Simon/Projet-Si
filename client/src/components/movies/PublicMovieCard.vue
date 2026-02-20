@@ -41,6 +41,11 @@ defineProps({
                 </div>
 
                 <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                  <span class="fw-semibold">Acteurs</span>
+                  <span>{{ data.actors || 'Non renseigné' }}</span>
+                </div>
+
+                <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
                   <span class="fw-semibold">Note moyenne</span>
                   <span class="badge text-bg-warning">{{ data.rating }}/10</span>
                 </div>
