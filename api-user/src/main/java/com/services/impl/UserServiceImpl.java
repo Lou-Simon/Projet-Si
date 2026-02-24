@@ -79,24 +79,4 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.deleteByPseudo(pseudo);
     }
-
-    @Override
-    @Transactional(readOnly = true)
-    public AuthTokenDto login(UserLoginDto loginDto) {
-        User user = userRepository.findByPseudo(loginDto.getPseudo())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Identifiants incorrects"));
-
-        // TODO: Remplacer par un check via PasswordEncoder.matches()
-        if (!user.getMotDePasse().equals(loginDto.getMotDePasse())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Identifiants incorrects");
-        }
-
-        // TODO: Remplacer par la génération d'un vrai JWT
-        String dummyToken = UUID.randomUUID().toString();
-
-        return AuthTokenDto.builder()
-                .token(dummyToken)
-                .user(userMapper.toDto(user))
-                .build();
-    }
 }

@@ -42,9 +42,4 @@ public class UserController {
         userService.deleteUser(pseudo);
         return ResponseEntity.ok().build();
     }
-
-    @PostMapping("/login")
-    public ResponseEntity<AuthTokenDto> login(@RequestBody UserLoginDto userLoginDto) {
-        return ResponseEntity.ok(userService.login(userLoginDto));
-    }
 }
