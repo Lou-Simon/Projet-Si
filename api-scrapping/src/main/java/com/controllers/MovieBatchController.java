@@ -7,7 +7,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 
-@CrossOrigin(origins = "*") // pour avoir accès via le client vueJS
+@CrossOrigin(origins = "*") // pour y avoir accès via le client vueJS
 @RestController
 @RequestMapping("/movies")
 public class MovieBatchController {
@@ -19,7 +19,9 @@ public class MovieBatchController {
     }
 
     /**
-     * Method to {nbmovies} the movies randmoly
+     * Méthode pour récupérer {nbMovies} films de manière aléatoire
+     * @param nbMovies le nombre de films à récupérer
+     * return un MovieBatchDto
      */
     @GetMapping("/batch/{nbMovies}")
 

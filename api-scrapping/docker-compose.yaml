@@ -1,17 +1,5 @@
 services:
-  mariadb:
-    image: mariadb:latest
-    container_name: scrapping
-    environment:
-      MARIADB_ROOT_PASSWORD: 1234
-      MARIADB_DATABASE: scrapping
-      MARIADB_ROOT_HOST: '%'
-    volumes:
-      - ./data:/var/lib/mysql
+  app:
+    build: .
     ports:
-      - "3307:3306"
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - "12062:8000"

@@ -1,8 +1,7 @@
 package com.entities;
 
-import java.util.Date;
+import java.util.List;
 
-import com.services.impl.enums.JobType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,11 +11,10 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Artist {
+public class ArtistBatch {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String name;
-    private JobType job;
-    private Date birthday;
-    private String biography;
+    private Integer imported;
+    private Integer skipped;
+    private List<Artist> artists;
 }
