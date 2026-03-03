@@ -1,7 +1,6 @@
-package com.controllers; // Doit correspondre à ton dossier /com/controllers/
-
-import com.dtos.ArtistDto;       // Import corrigé
-import com.services.ArtistService; // Import corrigé (vérifie bien le nom du dossier)
+package com.controllers; 
+import com.dtos.ArtistDto;       
+import com.services.ArtistService; 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +10,7 @@ import java.util.List;
  * Contrôleur REST exposant les endpoints de gestion des artistes.
  */
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/artists")
 @RequiredArgsConstructor
 public class ArtistController {
