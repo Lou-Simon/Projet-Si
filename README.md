@@ -23,6 +23,8 @@ Chaque service est indépendant, déployable séparément, et communique via la 
 
 Ici, ne sont spécifiés que les ports qui nous sont connus, aucune information concernant les autres ports ne nous a été transmise pour le moment.
 
+https://lh3.googleusercontent.com/gg-dl/AOI_d_-686qnvM-SHEY3LuKZEDCjqRbODEdIbH_tuyTHsxKumH87rxoCm7jf7cqH8foJZpUGvUY-j-vOukcMymGhWSmeXI-qMjnO34QsVFlHKwBqutAJEmP3EuBn3XCbqjlzV4wFHi3CJu7jyR3inzmjsfUhxTHzd1LLMROd96n5YBTpvGqs3g=s1024-rj<img width="1024" height="572" alt="image" src="https://github.com/user-attachments/assets/4958f98c-2187-42e6-99a3-312c43aa33dc" />
+
 ---
 
 ## Lancer le projet
