@@ -18,6 +18,11 @@
 			<strong>Date de naissance :</strong>
 			{{ formatDate(props.artist.birthDate) }}
 		</p>
+
+		<div class="container">
+        <img src="mr_bios.jpg" alt="Publicité Mr. Bios - L'alternative écologique" class="ad-image">
+    	</div>
+		
 	</article>
 </template>
 
@@ -34,3 +39,17 @@ function formatDate(date) {
 	return new Date(date).toLocaleDateString('fr-FR')
 }
 </script>
+
+<style>
+        .container {
+            display: flex;
+            justify-content: center;
+            padding: 50px;
+        }
+        .ad-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+    </style>
