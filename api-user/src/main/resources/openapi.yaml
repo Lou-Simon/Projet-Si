@@ -1,138 +1,230 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: API de Gestion des Chiens
-  description: |
-    API REST permettant la gestion des chiens dans le système.
-    Cette API permet de créer, lire, mettre à jour et supprimer des informations sur les chiens.
+  title: user-api
+  description: API pour la gestion des utilisateurs du système VOD.
   version: 1.0.0
-  contact:
-    name: Support API
-    email: support@example.com
 
 servers:
-  - url: http://localhost:8080
-    description: Serveur de développement local
-
-tags:
-  - name: dogs
-    description: Opérations liées à la gestion des chiens
+  - url:
+    description: Serveur de production
 
 paths:
-  /dogs:
+  /user:
     get:
-      tags:
-        - dogs
-      summary: Récupère tous les chiens
-      description: Retourne la liste complète des chiens enregistrés dans le système
-      operationId: getAllDogs
+      summary: Liste tous les utilisateurs
+      description: Renvoie une liste de tous les utilisateurs (admin).
+      security:
+        - bearerAuth: []
       responses:
         '200':
-          description: Liste des chiens récupérée avec succès
+          description: Une liste d'utilisateurs
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DogDto'
-        '500':
-          description: Erreur serveur interne
+                  $ref: '#/components/schemas/User'
+        '401':
+          description: Non authentifié
+        '403':
+          description: Accès interdit (admin uniquement)
 
     post:
-      tags:
-        - dogs
-      summary: Crée un nouveau chien
-      description: Ajoute un nouveau chien dans le système
-      operationId: createDog
+      summary: Créer un nouveau compte utilisateur
+      description: Permet à un nouvel utilisateur de s'inscrire sur la plateforme VOD.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DogDto'
+              $ref: '#/components/schemas/UserCreate'
       responses:
         '201':
-          description: Chien créé avec succès
+          description: Utilisateur créé avec succès
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DogDto'
+                $ref: '#/components/schemas/User'
         '400':
-          description: Données invalides
-        '500':
-          description: Erreur serveur interne
+          description: Requête invalide (données manquantes ou invalides)
+        '409':
+          description: Conflit - Le pseudo existe déjà
 
-  /dogs/{id}:
+  /user/{pseudo}:
     get:
-      tags:
-        - dogs
-      summary: Récupère un chien par son ID
-      description: Retourne les détails d'un chien spécifique
-      operationId: getDogById
+      summary: Récupérer un utilisateur par son pseudo
+      description: Renvoie les informations d'un utilisateur spécifique.
       parameters:
-        - name: id
+        - name: pseudo
           in: path
-          description: ID du chien à récupérer
           required: true
+          description: Le pseudo de l'utilisateur à récupérer.
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         '200':
-          description: Chien trouvé
+          description: Informations de l'utilisateur
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DogDto'
+                $ref: '#/components/schemas/User'
         '404':
-          description: Chien non trouvé
-        '500':
-          description: Erreur serveur interne
+          description: Utilisateur non trouvé
+
+    put:
+      summary: Met à jour un utilisateur
+      description: Met à jour les informations d'un utilisateur spécifique.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: pseudo
+          in: path
+          required: true
+          description: Le pseudo de l'utilisateur à mettre à jour.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: Utilisateur mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Requête invalide
+        '401':
+          description: Non authentifié
+        '403':
+          description: Accès interdit (vous ne pouvez modifier que votre propre compte)
+        '404':
+          description: Utilisateur non trouvé
 
     delete:
-      tags:
-        - dogs
-      summary: Supprime un chien
-      description: Supprime un chien du système par son ID
-      operationId: deleteDog
+      summary: Supprime un utilisateur
+      description: Supprime un utilisateur spécifique du système.
+      security:
+        - bearerAuth: []
       parameters:
-        - name: id
+        - name: pseudo
           in: path
-          description: ID du chien à supprimer
           required: true
+          description: Le pseudo de l'utilisateur à supprimer.
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         '200':
-          description: Chien supprimé avec succès
-          content:
-            application/json:
-              schema:
-                type: boolean
+          description: Utilisateur supprimé avec succès
+        '401':
+          description: Non authentifié
+        '403':
+          description: Accès interdit (admin uniquement)
         '404':
-          description: Chien non trouvé
-        '500':
-          description: Erreur serveur interne
+          description: Utilisateur non trouvé
 
 components:
   schemas:
-    DogDto:
+    UserCreate:
       type: object
-      description: Représentation d'un chien dans le système
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: Identifiant unique du chien
-          example: 1
-        name:
-          type: string
-          description: Nom du chien
-          example: "Rex"
-        race:
-          type: string
-          description: Race du chien
-          example: "Berger Allemand"
       required:
-        - name
-        - race 
+        - pseudo
+        - nom
+        - prenom
+        - age
+        - adresse
+        - motDePasse
+      properties:
+        pseudo:
+          type: string
+          description: Pseudo unique de l'utilisateur (identifiant de connexion).
+        nom:
+          type: string
+          description: Nom de famille de l'utilisateur.
+        prenom:
+          type: string
+          description: Prénom de l'utilisateur.
+        age:
+          type: integer
+          minimum: 1
+          description: Âge de l'utilisateur.
+        adresse:
+          type: string
+          description: Adresse de l'utilisateur.
+        motDePasse:
+          type: string
+          format: password
+          description: Mot de passe de l'utilisateur.
+
+    UserUpdate:
+      type: object
+      properties:
+        nom:
+          type: string
+          description: Nom de famille de l'utilisateur.
+        prenom:
+          type: string
+          description: Prénom de l'utilisateur.
+        age:
+          type: integer
+          minimum: 1
+          description: Âge de l'utilisateur.
+        adresse:
+          type: string
+          description: Adresse de l'utilisateur.
+        motDePasse:
+          type: string
+          format: password
+          description: Nouveau mot de passe de l'utilisateur.
+
+    User:
+      type: object
+      properties:
+        pseudo:
+          type: string
+          description: Pseudo unique de l'utilisateur.
+        nom:
+          type: string
+          description: Nom de famille de l'utilisateur.
+        prenom:
+          type: string
+          description: Prénom de l'utilisateur.
+        age:
+          type: integer
+          description: Âge de l'utilisateur.
+        adresse:
+          type: string
+          description: Adresse de l'utilisateur.
+
+    UserLogin:
+      type: object
+      required:
+        - pseudo
+        - motDePasse
+      properties:
+        pseudo:
+          type: string
+          description: Pseudo de l'utilisateur.
+        motDePasse:
+          type: string
+          format: password
+          description: Mot de passe de l'utilisateur.
+
+    AuthToken:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Token d'authentification JWT ou session.
+        user:
+          $ref: '#/components/schemas/User'
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

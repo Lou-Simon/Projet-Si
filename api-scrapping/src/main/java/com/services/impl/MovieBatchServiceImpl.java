@@ -15,22 +15,28 @@ import java.util.Random;
 public class MovieBatchServiceImpl implements MovieBatchService {
 
     private final String token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiNThlYzNjYmE5MWRjMTkzZjYwYzNjMDVlYTdmNWY3NSIsIm5iZiI6MTc3MTQ0MTgwOS44NjksInN1YiI6IjY5OTYwZTkxMmE0ZGNiNWUxMDg2MzQ0YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.SD6o8-oZAROPyzp8gYAMlLahDerDGW9AD_8BFQAn-_8";
-        private final WebClient webClient = WebClient.builder()
+    private final WebClient webClient = WebClient.builder()
                 .baseUrl("https://api.themoviedb.org/3")
                 .defaultHeader("Authorization", "Bearer " + token)
                 .defaultHeader("accept", "application/json")
                 .codecs(config -> config.defaultCodecs().maxInMemorySize(5 * 1024 * 1024))
                 .build();
 
+    /**
+     * Méthode qui permet de récupérer un nombre de films définit dans le paramètre.
+     * @param nbMovies le nombre de films à récupérer
+     * @return un MovieBatchDto
+     */
     @Override
     public MovieBatchDto getMovies(int nbMovies) {
         List<MovieDto> imported = new ArrayList<>();
         int skipped = 0;
         Random random = new Random();
 
+        // permet de récupérer nbMovies films non nulls, sinon on les ignore (l'API peut renvoyer des films nulls)
         while (imported.size() < nbMovies) {
             try {
-                imported.add(getMovieById(random.nextInt(1000000)));
+                imported.add(getMovieById(random.nextInt(1000000))); // permet de générer un identifiant de film compris entre 0 et 1000000
             } catch (Exception e) {
                 skipped++;
             }
@@ -43,6 +49,11 @@ public class MovieBatchServiceImpl implements MovieBatchService {
         return result;
     }
 
+    /**
+     * Méthode qui permet de récupérer un film par son idendifiant
+     * @param id l'identifiant du film
+     * @return un MovieDto
+     */
         private MovieDto getMovieById(int id) {
             Map m = webClient.get()
                     .uri("/movie/{id}?append_to_response=credits&language=en-US", id)

@@ -2,7 +2,7 @@ package com.entities;
 
 import java.util.Date;
 
-import com.enums.JobType;
+import com.services.impl.enums.JobType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

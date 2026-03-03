@@ -18,15 +18,27 @@ public class MovieServiceImpl implements MovieService {
             .baseUrl("https://api.themoviedb.org/3")
             .defaultHeader("Authorization", "Bearer "+token)
             .defaultHeader("accept", "application/json")
-            .codecs(config -> config.defaultCodecs().maxInMemorySize(5 * 1024 * 1024)) //Les répopnses de certaines requêtes sont trop longues, il faut augmenter le buffer.
+            .codecs(config -> config.defaultCodecs().maxInMemorySize(5 * 1024 * 1024)) //Les répopnses de certaines requêtes sont trop longues, il faut augmenter le buffer comme précisé dans la doc.
             .build();
 
+    //Dans cette méthode, 3 appels à l'API themoviedb sont nécessaires pour récupérer toutes les informations recquises afin de répondre à la spécification openAPI de la route.
+    /**
+     * Méthode qui permet de récupérer un film par son titre.
+     * @param title le titre du film
+     * @return un MovieDto
+     */
     @Override
     public MovieDto getMovieByTitle(String title) {
-        // appel 1 : recherche par titre pour récupérer l'id et avoir plus d'informations
+        // 1er appel : recherche du film par titre pour obtenir l'id'
+
         Map response = webClient.get()
                 .uri("/search/movie?query={title}&language=en-US&page=1", title)
                 .retrieve()
+                .onStatus(
+                        status -> status.isError(),
+                        resp -> resp.bodyToMono(String.class)
+                                .map(msg -> new EntityNotFoundException("Erreur API: " + msg))
+                )
                 .bodyToMono(Map.class)
                 .block();
 
@@ -35,17 +47,28 @@ public class MovieServiceImpl implements MovieService {
 
         int id = (int) results.get(0).get("id");
 
-        // Appel 2 : recherche du film par l'id avec toutes ses informations
+        // 2ème appel : recherche du film par son id pour récupérer toutes les informations
+
         Map m = webClient.get()
                 .uri("/movie/{id}?language=en-US", id)
                 .retrieve()
+                .onStatus(
+                        status -> status.isError(),
+                        resp -> resp.bodyToMono(String.class)
+                                .map(msg -> new RuntimeException("Erreur API: " + msg))
+                )
                 .bodyToMono(Map.class)
                 .block();
 
-        // Appel 3 : ici, on récupère les crédits pour avoir la lsite des acteurs
+        // 3ème appel : recherche des artistes relatifs au films
         Map credits = webClient.get()
                 .uri("/movie/{id}/credits?language=en-US", id)
                 .retrieve()
+                .onStatus(
+                        status -> status.isError(),
+                        resp -> resp.bodyToMono(String.class)
+                                .map(msg -> new RuntimeException("Erreur API: " + msg))
+                )
                 .bodyToMono(Map.class)
                 .block();
 

@@ -10,5 +10,4 @@ public interface UserService {
     UserDto getUserByPseudo(String pseudo);
     UserDto updateUser(String pseudo, UserUpdateDto userUpdateDto);
     void deleteUser(String pseudo);
-    AuthTokenDto login(UserLoginDto loginDto);
 }
