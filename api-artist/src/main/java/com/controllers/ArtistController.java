@@ -10,7 +10,6 @@ import java.util.List;
  * Contrôleur REST exposant les endpoints de gestion des artistes.
  */
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/api/artists")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")

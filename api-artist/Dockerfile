@@ -1,11 +1,23 @@
-# Utiliser l'image Java 17
-FROM openjdk:17-jdk-alpine
+# Étape 1 : Compilation avec une image qui contient déjà Gradle
+FROM gradle:8.5-jdk17 AS builder
+WORKDIR /app
 
-# Copier le jar dans le conteneur
-COPY target/api-artist.jar /app/api-artist.jar
+# On copie tout le projet (puisque tu n'as pas le wrapper complet)
+COPY . .
 
-# Exposer le port de l'application
-EXPOSE 8080
+# On lance le build directement via le gradle du système (pas le wrapper)
+RUN gradle bootJar --no-daemon
 
-# Lancer l'application
-ENTRYPOINT ["java", "-jar", "/app/api-artist.jar"]
+# Étape 2 : Exécution (Run Stage)
+FROM eclipse-temurin:17-jre
+WORKDIR /app
+
+# Copier uniquement le binaire compilé depuis l'environnement builder
+# Attention : contrairement à Maven (target/), Gradle place les binaires dans build/libs/
+COPY --from=builder /app/build/libs/*.jar app.jar
+
+# Exposer le port de l'API
+EXPOSE 12064
+
+# Point d'entrée
+ENTRYPOINT ["java", "-jar", "app.jar"]

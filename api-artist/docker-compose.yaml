@@ -1,33 +1,25 @@
 services:
-  db:
+  mariadb:
     image: mariadb:latest
-    container_name: artist
-    restart: always
+    container_name: mariadb
     environment:
-      MARIADB_ROOT_PASSWORD: mdp_super_secret
-      MARIADB_DATABASE: nom_de_ma_db
-      MARIADB_USER: abadacor
-      MARIADB_PASSWORD: abadacor
-    ports:
-      - "9999:3306"  # Accessible depuis ton host si besoin
+      MARIADB_ROOT_PASSWORD: monMotDePasseSuperSecret
+      MARIADB_DATABASE: test
     volumes:
       - db_data:/var/lib/mysql
-
-  api:
-    build: .
-    container_name: mon-api
     ports:
-      - "8080:8080"
+      - "3306:3306"
+
+  app:
+    build: .
+    container_name: api-artist
+    ports:
+      - "12064:12064"
     environment:
-      # Connexion à MariaDB via le service 'db' (pas localhost)
-      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/nom_de_ma_db
-      SPRING_DATASOURCE_USERNAME: abadacor
-      SPRING_DATASOURCE_PASSWORD: abadacor
-      SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.mariadb.jdbc.Driver
-    depends_on:
-      - db
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/test
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=monMotDePasseSuperSecret
+      - SERVER_PORT=12064
 
 volumes:
   db_data:
-
-    //ajouter le docker file
