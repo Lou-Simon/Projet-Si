@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 12061
 
 spring:
   application:
@@ -7,46 +7,141 @@ spring:
   cloud:
     gateway:
       routes:
+
+        # ===== AUTHENTICATION API =====
+        # Routes publiques (pas de filtre JWT)
+        - id: auth-register
+          uri: http://localhost:12063
+          predicates:
+            - Path=/api/auth/register
+          filters:
+            - StripPrefix=1
+
+        - id: auth-login
+          uri: http://localhost:12063
+          predicates:
+            - Path=/api/auth/login
+          filters:
+            - StripPrefix=1
+
+        # Routes protégées auth
+        - id: auth-protected
+          uri: http://localhost:12063
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=1
+            - AuthenticationFilter
+
         # ===== USER API =====
-        - id: users-api
-          uri: http://localhost:8001
+        # Création de compte : publique
+        - id: user-create
+          uri: http://localhost:12063
+          predicates:
+            - Path=/api/user
+            - Method=POST
+          filters:
+            - StripPrefix=1
+
+        # Lecture d'un profil : publique
+        - id: user-get-by-pseudo
+          uri: http://localhost:12063
+          predicates:
+            - Path=/api/user/{pseudo}
+            - Method=GET
+          filters:
+            - StripPrefix=1
+
+        # Routes protégées (liste, update, delete)
+        - id: user-protected
+          uri: http://localhost:12063
           predicates:
             - Path=/api/user/**
           filters:
             - StripPrefix=1
+            - AuthenticationFilter
 
         # ===== ARTIST API =====
         - id: artist-api
-          uri: http://localhost:8082
+          uri: http://localhost:12064
           predicates:
             - Path=/api/artist/**
           filters:
             - StripPrefix=1
+            - AuthenticationFilter
 
         # ===== REVIEW API =====
-        - id: review-api
-          uri: http://localhost:8083
+        # Lecture des reviews : publique
+        - id: review-read
+          uri: http://localhost:12065
+          predicates:
+            - Path=/api/reviews/**
+            - Method=GET
+          filters:
+            - StripPrefix=1
+
+        # Écriture des reviews : protégée
+        - id: review-write
+          uri: http://localhost:12065
           predicates:
             - Path=/api/reviews/**
           filters:
             - StripPrefix=1
-            -
+            - AuthenticationFilter
 
-            # ===== SCRAPING API =====
+        # ===== SCRAPING API =====
         - id: scraping-movies
-          uri: http://localhost:8084
+          uri: http://localhost:12062
           predicates:
             - Path=/api/movies/**
           filters:
             - StripPrefix=1
-            -
+            - AuthenticationFilter
+
         - id: scraping-artists
-          uri: http://localhost:8084
+          uri: http://localhost:12062
           predicates:
             - Path=/api/artists/**
           filters:
             - StripPrefix=1
+            - AuthenticationFilter
 
+        # ===== PAYMENT API =====
+        - id: payment-api
+          uri: http://localhost:12066
+          predicates:
+            - Path=/api/payments/**
+          filters:
+            - StripPrefix=1
+            - AuthenticationFilter
+
+        # ===== RESERVATION API =====
+        - id: reservation-api
+          uri: http://localhost:12067
+          predicates:
+            - Path=/api/reservations/**
+          filters:
+            - StripPrefix=1
+            - AuthenticationFilter
+
+        # ===== POSTER API =====
+        # Lecture des posters : publique
+        - id: poster-read
+          uri: http://localhost:12068
+          predicates:
+            - Path=/api/posters/**
+            - Method=GET
+          filters:
+            - StripPrefix=1
+
+        # Écriture des posters : protégée
+        - id: poster-write
+          uri: http://localhost:12068
+          predicates:
+            - Path=/api/posters/**
+          filters:
+            - StripPrefix=1
+            - AuthenticationFilter
 
       # Configuration CORS globale
       globalcors:
@@ -61,6 +156,11 @@ spring:
               - PATCH
               - OPTIONS
             allowedHeaders: "*"
+
+# Clé secrète JWT utilisée pour valider les tokens
+jwt:
+  secret: "hashage_from_the_bios is the biography of a legend : the BIOS" # À changer en production, jouer avec excès comporte des risques, appeller le 07 75 10 13 appel non surtaxé.
+  expiration: 86400000 # 24h en millisecondes
 
 management:
   endpoints:

@@ -1,4 +1,4 @@
-package com.services; // Corrigé : doit correspondre au dossier /com/services/
+package com.services; 
 
 import com.dtos.ArtistDto;
 import com.entities.Artist;

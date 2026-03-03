@@ -1,6 +1,6 @@
-package com.mappers; // Corrigé pour correspondre à ton dossier
+package com.mappers; 
 
-// Imports corrigés vers tes nouveaux emplacements
+
 import com.entities.Artist;
 import com.dtos.ArtistDto;
 

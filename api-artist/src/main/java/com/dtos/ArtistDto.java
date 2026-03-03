@@ -1,4 +1,4 @@
-package com.dtos; // Doit correspondre au dossier physique
+package com.dtos; 
 
 import lombok.*;
 import java.time.LocalDate;

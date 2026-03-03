@@ -1,5 +1,4 @@
-package com.entities; // Garde uniquement le package qui correspond à ton dossier réel
-
+package com.entities; 
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;

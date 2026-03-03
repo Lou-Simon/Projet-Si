@@ -1,6 +1,6 @@
-package com.repositories; // Doit correspondre à ton dossier /com/repositories/
+package com.repositories; 
 
-import com.entities.Artist; // L'import corrigé qui pointe vers ton entité
+import com.entities.Artist; 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
