@@ -1,4 +1,4 @@
-# Projet SI — Plateforme VOD Microservices
+# Projet SI — Plateforme VOD Microservices augmentée par IA + par le Bios
 
 Application de vidéo à la demande construite sur une architecture microservices, permettant de gérer films, artistes, utilisateurs, réservations, paiements et avis.
 
@@ -47,3 +47,5 @@ docker-compose up --build
 - **Java / Spring Boot** — microservices & gateway (Spring Cloud Gateway)
 - **JWT** — authentification centralisée dans la gateway
 - **Docker / Docker Compose** — orchestration des services
+
+Dédicace au bios, ti é le sang
