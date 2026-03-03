@@ -5,7 +5,7 @@ import com.services.ArtistService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*") // pour avoir accès via le client vueJS
+@CrossOrigin(origins = "*") // pour y avoir accès via le client vueJS
 @RestController
 @RequestMapping("/artists")
 public class ArtistController {
@@ -17,7 +17,9 @@ public class ArtistController {
     }
 
     /**
-     * Method to get the movie based on the title
+     * Méthode pour récupérer l'artiste par son nom
+     * @param  name le nom de l'artiste
+     * @return un ArtistDto
      */
     @GetMapping("/{name}")
     public ArtistDto getArtist(@PathVariable("name") String name) {

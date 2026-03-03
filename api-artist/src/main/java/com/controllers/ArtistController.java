@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/artists")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class ArtistController {
 
 	private final ArtistService service;

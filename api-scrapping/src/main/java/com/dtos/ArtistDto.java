@@ -1,6 +1,6 @@
 package com.dtos;
 
-import com.enums.JobType;
+import com.services.impl.enums.JobType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
