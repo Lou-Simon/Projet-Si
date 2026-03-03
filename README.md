@@ -21,6 +21,8 @@ Client (12060)
 
 Chaque service est indépendant, déployable séparément, et communique via la gateway.
 
+Ici, ne sont spécifiés que les ports qui nous sont connus, aucune information concernant les autres ports ne nous a été transmise pour le moment.
+
 ---
 
 ## Lancer le projet
