@@ -9,15 +9,21 @@ services:
       - db_data:/var/lib/mysql
     ports:
       - "3306:3306"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   app:
     build: .
     container_name: api-artist
-    ports:
-      - "12064:12064"
     depends_on:
       mariadb:
         condition: service_healthy
+    ports:
+      - "12064:12064"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/test
       - SPRING_DATASOURCE_USERNAME=root
