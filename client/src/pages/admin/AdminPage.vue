@@ -1,7 +1,7 @@
 <template>
   <section class="page container py-4">
     <div class="films-header text-center mb-4">
-      <h1>Administration</h1>
+      <h1>Administration Films</h1>
       <div class="container d-flex justify-content-center align-items-center gap-2 mt-3 ajout-film">
         Combien de films ajouter ? (API de scraping) :
         <input type="number" v-model.number="nbMovies" min="1" max="100" class="form-control d-inline-block w-auto ms-2" />

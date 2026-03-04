@@ -7,6 +7,7 @@ import EvaluationsPage from '@/pages/public/EvaluationsPage.vue'
 import ConnexionPage from '@/pages/public/ConnexionPage.vue'
 import InscriptionPage from '@/pages/public/InscriptionPage.vue'
 import AdminPage from '@/pages/admin/AdminPage.vue'
+import AdminArtistsPage from '@/pages/admin/AdminArtistsPage.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -19,7 +20,8 @@ const router = createRouter({
     { path: '/evaluations', name: 'evaluations', component: EvaluationsPage },
     { path: '/connexion', name: 'connexion', component: ConnexionPage },
     { path: '/inscription', name: 'inscription', component: InscriptionPage },
-    { path: '/admin', name: 'admin', component: AdminPage }
+    { path: '/admin', name: 'admin', component: AdminPage },
+    { path: '/admin/artistes', name: 'admin-artists', component: AdminArtistsPage }
   ]
 })
 

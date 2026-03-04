@@ -1,6 +1,6 @@
 <template>
-  <section class="page container py-4">
-    <div class="films-header text-center mb-4">
+  <section class="page container py-4 f-flex flex-column gap-4">
+     <div class="films-header text-center mb-4">
       <h1>Films</h1>
       <h2>Découvrez des centaines de films.</h2>
     </div>
