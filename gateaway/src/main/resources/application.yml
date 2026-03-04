@@ -36,7 +36,7 @@ spring:
         # ===== USER API =====
         # Création de compte : publique
         - id: user-create
-          uri: http://localhost:12063
+          uri: http://api-user:12063
           predicates:
             - Path=/api/user
             - Method=POST
@@ -45,7 +45,7 @@ spring:
 
         # Lecture d'un profil : publique
         - id: user-get-by-pseudo
-          uri: http://localhost:12063
+          uri: http://api-user:12063
           predicates:
             - Path=/api/user/{pseudo}
             - Method=GET
@@ -54,7 +54,7 @@ spring:
 
         # Routes protégées (liste, update, delete)
         - id: user-protected
-          uri: http://localhost:12063
+          uri: http://api-user:12063
           predicates:
             - Path=/api/user/**
           filters:
@@ -63,35 +63,35 @@ spring:
 
         # ===== ARTIST API =====
         - id: artist-api
-          uri: http://localhost:12064
+          uri: http://api-artist:12064
           predicates:
-            - Path=/api/artist/**
+            - Path=/api/artists/**
           filters:
-            - StripPrefix=1
-            - AuthenticationFilter
+            - StripPrefix=0
+            # - AuthenticationFilter
 
         # ===== REVIEW API =====
         # Lecture des reviews : publique
         - id: review-read
-          uri: http://localhost:12065
+          uri: http://api-reviews:12064
           predicates:
             - Path=/api/reviews/**
             - Method=GET
           filters:
-            - StripPrefix=1
+            - StripPrefix=0
 
         # Écriture des reviews : protégée
         - id: review-write
-          uri: http://localhost:12065
+          uri: http://api-reviews:12064
           predicates:
             - Path=/api/reviews/**
           filters:
-            - StripPrefix=1
+            - StripPrefix=0
             - AuthenticationFilter
 
         # ===== SCRAPING API =====
         - id: scraping-movies
-          uri: http://localhost:12062
+          uri: http://api-scrapping:12062
           predicates:
             - Path=/api/movies/**
           filters:
@@ -99,7 +99,7 @@ spring:
             - AuthenticationFilter
 
         - id: scraping-artists
-          uri: http://localhost:12062
+          uri: http://api-scrapping:12062
           predicates:
             - Path=/api/artists/**
           filters:

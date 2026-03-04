@@ -1,0 +1,85 @@
+services:
+
+  # ─── DATABASES ───────────────────────────────────────────────
+
+  mariadb-artist:
+    image: mariadb:latest
+    container_name: mariadb-artist
+    environment:
+      MARIADB_ROOT_PASSWORD: monMotDePasseSuperSecret
+      MARIADB_DATABASE: test
+    volumes:
+      - db_artist:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mariadb-user:
+    image: mariadb:latest
+    container_name: mariadb-user
+    environment:
+      MARIADB_ROOT_PASSWORD: monMotDePasseSuperSecret
+      MARIADB_DATABASE: test
+    volumes:
+      - db_user:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── APIS ────────────────────────────────────────────────────
+
+  api-artist:
+    build: ./api-artist
+    container_name: api-artist
+    depends_on:
+      mariadb-artist:
+        condition: service_healthy
+    ports:
+      - "12064:12064"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-artist:3306/test
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=monMotDePasseSuperSecret
+      - SERVER_PORT=12064
+
+  api-user:
+    build: ./api-user
+    container_name: api-user
+    depends_on:
+      mariadb-user:
+        condition: service_healthy
+    ports:
+      - "12063:12063"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-user:3306/test
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=monMotDePasseSuperSecret
+      - SERVER_PORT=12063
+
+  api-scrapping:
+    build: ./api-scrapping
+    container_name: api-scrapping
+    ports:
+      - "12062:12062"
+
+  # ─── GATEWAY ─────────────────────────────────────────────────
+
+  gateway:
+    build: ./gateaway
+    container_name: gateway
+    ports:
+      - "12061:12061"
+    depends_on:
+      - api-artist
+      - api-user
+      - api-scrapping
+
+volumes:
+  db_artist:
+  db_user:
