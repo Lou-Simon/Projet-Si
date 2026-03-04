@@ -1,34 +1,36 @@
 services:
   mariadb:
-    image: mariadb:latest
-    container_name: mariadb
+    image: mariadb:11.6.2-ubi9
+    container_name: api_artist_db
+    restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     environment:
       MARIADB_ROOT_PASSWORD: monMotDePasseSuperSecret
       MARIADB_DATABASE: test
-    volumes:
-      - db_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmonMotDePasseSuperSecret"]
       start_period: 10s
-      interval: 10s
+      interval: 5s
       timeout: 5s
       retries: 5
 
   app:
     build: .
-    container_name: api-artist
+    container_name: api_artist_app
+    restart: unless-stopped
     depends_on:
       mariadb:
         condition: service_healthy
     ports:
       - "12064:12064"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/test
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=monMotDePasseSuperSecret
-      - SERVER_PORT=12064
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/test
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: monMotDePasseSuperSecret
+      SERVER_PORT: 12064
 
 volumes:
   db_data:

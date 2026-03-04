@@ -2,65 +2,70 @@ services:
 
   # ─── DATABASES ───────────────────────────────────────────────
 
-  mariadb-artist:
-    image: mariadb:latest
-    container_name: mariadb-artist
+  artistdb:
+    image: mariadb:11.6.2-ubi9
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
+      - "db_artist:/var/lib/mysql"
     environment:
       MARIADB_ROOT_PASSWORD: monMotDePasseSuperSecret
       MARIADB_DATABASE: test
-    volumes:
-      - db_artist:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmonMotDePasseSuperSecret"]
       start_period: 10s
-      interval: 10s
+      interval: 5s
       timeout: 5s
       retries: 5
 
-  mariadb-user:
-    image: mariadb:latest
-    container_name: mariadb-user
+  userdb:
+    image: mariadb:11.6.2-ubi9
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
+      - "db_user:/var/lib/mysql"
     environment:
       MARIADB_ROOT_PASSWORD: monMotDePasseSuperSecret
       MARIADB_DATABASE: test
-    volumes:
-      - db_user:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmonMotDePasseSuperSecret"]
       start_period: 10s
-      interval: 10s
+      interval: 5s
       timeout: 5s
       retries: 5
 
-  # ─── APIS ────────────────────────────────────────────────────
+  # ─── APIS (extrait) ──────────────────────────────────────────
+
+  api-user:
+    image: gitlab-depinfo-2025.univ-brest.fr:5050/e22101168/apis/api-user:v1.0.0
+    ports:
+      - "12063:8080"
+    depends_on:
+      userdb:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://userdb:3306/test
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=monMotDePasseSuperSecret
 
   api-artist:
-    build: ./api-artist
-    container_name: api-artist
-    depends_on:
-      mariadb-artist:
-        condition: service_healthy
+    image: gitlab-depinfo-2025.univ-brest.fr:5050/e22101168/apis/api-artist:v1.0.0
     ports:
       - "12064:12064"
+    depends_on:
+      artistdb:
+        condition: service_healthy
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-artist:3306/test
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://artistdb:3306/test
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=monMotDePasseSuperSecret
       - SERVER_PORT=12064
-
-  api-user:
-    build: ./api-user
-    container_name: api-user
-    depends_on:
-      mariadb-user:
-        condition: service_healthy
-    ports:
-      - "12063:12063"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-user:3306/test
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=monMotDePasseSuperSecret
-      - SERVER_PORT=12063
 
   api-scrapping:
     build: ./api-scrapping

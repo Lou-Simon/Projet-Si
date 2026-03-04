@@ -1,5 +1,10 @@
 services:
   app:
     build: .
+    container_name: api_scrapping_app
+    restart: unless-stopped
     ports:
       - "12062:12062"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro

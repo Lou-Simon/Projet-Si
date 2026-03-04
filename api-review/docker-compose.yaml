@@ -1,0 +1,30 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: api_review_db
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    image: gitlab-depinfo-2025.univ-brest.fr:5050/e22101168/apis/api-review:v1.0.0
+    container_name: api_review_app
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    ports:
+      - "12065:8080" 
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/review_db
+
+volumes:
+  mongo_data:
