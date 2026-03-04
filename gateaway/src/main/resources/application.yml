@@ -59,7 +59,7 @@ spring:
             - Path=/api/user/**
           filters:
             - StripPrefix=1
-            - AuthenticationFilter
+            #- AuthenticationFilter
 
         # ===== ARTIST API =====
         - id: artist-api
@@ -96,7 +96,7 @@ spring:
             - Path=/api/movies/**
           filters:
             - StripPrefix=1
-            - AuthenticationFilter
+            #- AuthenticationFilter
 
         - id: scraping-artists
           uri: http://api-scrapping:12062
@@ -104,7 +104,7 @@ spring:
             - Path=/api/artists/**
           filters:
             - StripPrefix=1
-            - AuthenticationFilter
+            #- AuthenticationFilter
 
         # ===== PAYMENT API =====
         - id: payment-api
