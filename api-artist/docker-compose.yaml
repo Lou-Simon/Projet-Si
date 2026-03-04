@@ -15,6 +15,9 @@ services:
     container_name: api-artist
     ports:
       - "12064:12064"
+    depends_on:
+      mariadb:
+        condition: service_healthy
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/test
       - SPRING_DATASOURCE_USERNAME=root

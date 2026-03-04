@@ -1,138 +1,123 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: API de Gestion des Chiens
-  description: |
-    API REST permettant la gestion des chiens dans le système.
-    Cette API permet de créer, lire, mettre à jour et supprimer des informations sur les chiens.
+  title: artist-api
+  description: API pour la gestion d'une base de données d'artistes.
   version: 1.0.0
-  contact:
-    name: Support API
-    email: support@example.com
 
 servers:
-  - url: http://localhost:8080
-    description: Serveur de développement local
-
-tags:
-  - name: dogs
-    description: Opérations liées à la gestion des chiens
+  - url: http://localhost:8000/api
+    description: Serveur de test
 
 paths:
-  /dogs:
+  /artist:
     get:
-      tags:
-        - dogs
-      summary: Récupère tous les chiens
-      description: Retourne la liste complète des chiens enregistrés dans le système
-      operationId: getAllDogs
+      summary: Liste tous les artistes
+      description: Renvoie une liste de tous les artistes dans la base de données.
       responses:
         '200':
-          description: Liste des chiens récupérée avec succès
+          description: Une liste d'artistes
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DogDto'
-        '500':
-          description: Erreur serveur interne
-
+                  $ref: '#/components/schemas/Artist'
     post:
-      tags:
-        - dogs
-      summary: Crée un nouveau chien
-      description: Ajoute un nouveau chien dans le système
-      operationId: createDog
+      summary: Ajoute un nouvel artiste
+      description: Ajoute un nouvel artiste à la base de données.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DogDto'
+              $ref: '#/components/schemas/Artist'
       responses:
         '201':
-          description: Chien créé avec succès
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DogDto'
+          description: Artiste créé avec succès
         '400':
-          description: Données invalides
-        '500':
-          description: Erreur serveur interne
-
-  /dogs/{id}:
+          description: Requête invalide
+  /artist/{id}:
     get:
-      tags:
-        - dogs
-      summary: Récupère un chien par son ID
-      description: Retourne les détails d'un chien spécifique
-      operationId: getDogById
+      summary: Trouver un artiste par son ID
+      description: Renvoie un artiste spécifique identifié par son ID.
       parameters:
         - name: id
           in: path
-          description: ID du chien à récupérer
           required: true
+          description: L'ID de l'artiste à trouver.
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         '200':
-          description: Chien trouvé
+          description: Détails d'un artiste
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DogDto'
+                $ref: '#/components/schemas/Artist'
         '404':
-          description: Chien non trouvé
-        '500':
-          description: Erreur serveur interne
-
+          description: Artiste non trouvé
+    put:
+      summary: Met à jour un artiste
+      description: Met à jour les informations d'un artiste spécifique.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: L'ID de l'artiste à mettre à jour.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Artist'
+      responses:
+        '200':
+          description: Artiste mis à jour avec succès
+        '404':
+          description: Artiste non trouvé
+        '400':
+          description: Requête invalide
     delete:
-      tags:
-        - dogs
-      summary: Supprime un chien
-      description: Supprime un chien du système par son ID
-      operationId: deleteDog
+      summary: Supprime un artiste
+      description: Supprime un artiste spécifique de la base de données.
       parameters:
         - name: id
           in: path
-          description: ID du chien à supprimer
           required: true
+          description: L'ID de l'artiste à supprimer.
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         '200':
-          description: Chien supprimé avec succès
-          content:
-            application/json:
-              schema:
-                type: boolean
+          description: Artiste supprimé avec succès
         '404':
-          description: Chien non trouvé
-        '500':
-          description: Erreur serveur interne
-
+          description: Artiste non trouvé
 components:
   schemas:
-    DogDto:
+    Artist:
       type: object
-      description: Représentation d'un chien dans le système
+      required:
+        - id
+        - nom
       properties:
         id:
-          type: integer
-          format: int64
-          description: Identifiant unique du chien
-          example: 1
-        name:
           type: string
-          description: Nom du chien
-          example: "Rex"
-        race:
+          description: L'identifiant unique de l'artiste.
+        nom:
           type: string
-          description: Race du chien
-          example: "Berger Allemand"
-      required:
-        - name
-        - race 
+          description: Le nom de l'artiste.
+        genre:
+          type: string
+          description: Le genre musical de l'artiste.
+        pays:
+          type: string
+          description: Le pays d'origine de l'artiste.
+        dateNaissance:
+          type: string
+          format: date
+          description: La date de naissance de l'artiste.
+        biographie:
+          type: string
+          description: Une courte biographie de l'artiste.
