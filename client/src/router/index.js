@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomePage from '@/pages/public/HomePage.vue'
 import FilmsPage from '@/pages/public/FilmsPage.vue'
 import ArtistsPage from '@/pages/public/ArtistsPage.vue'
 import GenresPage from '@/pages/public/GenresPage.vue'
@@ -12,7 +11,7 @@ import AdminPage from '@/pages/admin/AdminPage.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', name: 'home', component: HomePage },
+    { path: '/', redirect: '/films' },
     { path: '/films', name: 'films', component: FilmsPage },
     { path: '/acteurs-realisateurs', name: 'artists', component: ArtistsPage },
     { path: '/genres', name: 'genres', component: GenresPage },

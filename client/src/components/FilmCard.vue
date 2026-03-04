@@ -1,42 +1,18 @@
 <template>
-	<article class="film-card">
-		<div class="film-card__top">
-			<h3 class="film-card__title">{{ props.movie.title }}</h3>
-			<span class="film-card__year">{{ props.movie.releaseYear }}</span>
-		</div>
+	<article class="card h-100 bg-dark text-light border-secondary">
+		<div class="card-body d-flex flex-column gap-2">
+			<div class="d-flex justify-content-between align-items-start gap-2">
+				<h3 class="h5 card-title mb-0">{{ props.movie.title }}</h3>
+				<span class="rounded-pill px-2 py-1 small bg-secondary text-light">{{ props.movie.releaseYear }}</span>
+			</div>
 
-		<p class="film-card__description">
-			{{ props.movie.description || 'Aucune description disponible.' }}
-		</p>
+			<p class="card-text mb-0">
+				<strong>Réalisateur :</strong> {{ props.movie.director || 'Non renseigné' }}
+			</p>
 
-		<div class="film-card__meta">
-			<span class="badge">
-				⭐
-				{{
-					typeof props.movie.rating === 'number'
-						? `${props.movie.rating.toFixed(1)}/5`
-						: 'N/A'
-				}}
-			</span>
-		</div>
-
-		<p class="film-card__line">
-			<strong>Réalisateur :</strong> {{ props.movie.director }}
-		</p>
-
-		<p class="film-card__line">
-			<strong>Acteurs :</strong>
-			{{
-				props.movie.actors?.length
-					? props.movie.actors.length <= 3
-						? props.movie.actors.join(', ')
-						: `${props.movie.actors.slice(0, 3).join(', ')}...`
-					: 'Non renseigné'
-			}}
-		</p>
-
-		<div class="film-card__genres">
-			<span v-for="genre in props.movie.genres" :key="genre" class="genre-chip">{{ genre }}</span>
+			<div v-if="props.movie.genres?.length" class="d-flex flex-wrap gap-1 mt-auto">
+				<span v-for="genre in props.movie.genres" :key="genre" class="rounded-pill px-2 py-1 small bg-primary text-light">{{ genre }}</span>
+			</div>
 		</div>
 	</article>
 </template>

@@ -1,6 +1,7 @@
 export const API_ENDPOINTS = {
 	artists: 'http://localhost:8080/api/artists',
-	moviesBatch: 'http://localhost:12062/movies/batch/10'
+	moviesBatch: 'http://localhost:12062/movies/batch',
+	movies: '/movies.json',
 }
 
 export const AUTH_API = {

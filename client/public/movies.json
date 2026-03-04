@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "title": "Inception",
+    "releaseYear": 2010,
+    "director": "Christopher Nolan"
+  },
+  {
+    "id": 2,
+    "title": "Interstellar",
+    "releaseYear": 2014,
+    "director": "Christopher Nolan"
+  },
+  {
+    "id": 3,
+    "title": "The Dark Knight",
+    "releaseYear": 2008,
+    "director": "Christopher Nolan"
+  },
+  {
+    "id": 4,
+    "title": "Pulp Fiction",
+    "releaseYear": 1994,
+    "director": "Quentin Tarantino"
+  },
+  {
+    "id": 5,
+    "title": "The Matrix",
+    "releaseYear": 1999,
+    "director": "Lana Wachowski, Lilly Wachowski"
+  },
+  {
+    "id": 6,
+    "title": "Gladiator",
+    "releaseYear": 2000,
+    "director": "Ridley Scott"
+  },
+  {
+    "id": 7,
+    "title": "Parasite",
+    "releaseYear": 2019,
+    "director": "Bong Joon-ho"
+  },
+  {
+    "id": 8,
+    "title": "Whiplash",
+    "releaseYear": 2014,
+    "director": "Damien Chazelle"
+  },
+  {
+    "id": 9,
+    "title": "La La Land",
+    "releaseYear": 2016,
+    "director": "Damien Chazelle"
+  },
+  {
+    "id": 10,
+    "title": "The Grand Budapest Hotel",
+    "releaseYear": 2014,
+    "director": "Wes Anderson"
+  },
+  {
+    "id": 11,
+    "title": "Fight Club",
+    "releaseYear": 1999,
+    "director": "David Fincher"
+  },
+  {
+    "id": 12,
+    "title": "Se7en",
+    "releaseYear": 1995,
+    "director": "David Fincher"
+  }
+]
