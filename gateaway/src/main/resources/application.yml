@@ -11,14 +11,14 @@ spring:
         # ===== AUTHENTICATION API =====
         # Routes publiques (pas de filtre JWT)
         - id: auth-register
-          uri: http://localhost:12063
+          uri: http://info-tpsi.univ-brest.fr:12124
           predicates:
             - Path=/api/auth/register
           filters:
             - StripPrefix=1
 
         - id: auth-login
-          uri: http://localhost:12063
+          uri: http://info-tpsi.univ-brest.fr:12124
           predicates:
             - Path=/api/auth/login
           filters:
@@ -26,7 +26,7 @@ spring:
 
         # Routes protégées auth
         - id: auth-protected
-          uri: http://localhost:12063
+          uri: http://info-tpsi.univ-brest.fr:12124
           predicates:
             - Path=/api/auth/**
           filters:
