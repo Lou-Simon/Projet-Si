@@ -8,7 +8,7 @@ import ConnexionPage from '@/pages/public/ConnexionPage.vue'
 import InscriptionPage from '@/pages/public/InscriptionPage.vue'
 import AdminPage from '@/pages/admin/AdminPage.vue'
 import AdminArtistsPage from '@/pages/admin/AdminArtistsPage.vue'
-import UsersListPage from '@/pages/admin/UsersListPage.vue'
+import UsersListPage from '@/pages/public/UsersListPage.vue'
 import UserProfilePage from '@/pages/public/UserProfilePage.vue'
 import UserEditPage from '@/pages/admin/UserEditPage.vue'
 

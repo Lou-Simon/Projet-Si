@@ -64,7 +64,7 @@ import { useRoute } from 'vue-router'
 const isMenuOpen = ref(false)
 const isConnected = ref(false)
 const route = useRoute()
-const BYPASS_AUTH_FOR_DEV = true
+const BYPASS_AUTH_FOR_DEV = false
 
 const updateAuthState = () => {
 	isConnected.value = BYPASS_AUTH_FOR_DEV || Boolean(localStorage.getItem('token') || localStorage.getItem('isConnected'))

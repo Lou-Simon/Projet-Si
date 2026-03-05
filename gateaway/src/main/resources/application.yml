@@ -73,6 +73,15 @@ spring:
             - StripPrefix=1
             #- AuthenticationFilter
 
+          # ===== MOVIES API =====
+        - id: movies-api
+          uri: http://info-tpsi.univ-brest.fr:12093
+          predicates:
+            - Path=/api/movies/**
+          filters:
+            - StripPrefix=1
+            #- AuthenticationFilter
+
         # ===== ARTIST API =====
         - id: artist-api
           uri: http://api-artist:12064
