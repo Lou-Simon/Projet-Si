@@ -30,7 +30,11 @@ const router = createRouter({
     },
     { path: '/inscription', name: 'inscription', component: InscriptionPage },
     { path: '/admin', name: 'admin', component: AdminPage },
-    { path: '/admin/artistes', name: 'admin-artists', component: AdminArtistsPage }
+    { path: '/admin/artistes', name: 'admin-artists', component: AdminArtistsPage },
+
+    { path: '/users',              component: UsersListPage   },  // protégée
+    { path: '/users/:pseudo',      component: UserProfilePage },  // publique
+    { path: '/users/:pseudo/edit', component: UserEditPage    }  // protégée
   ]
 })
 
