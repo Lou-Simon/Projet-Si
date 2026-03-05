@@ -10,21 +10,21 @@ spring:
 
         # ===== AUTHENTICATION API =====
         - id: auth-register
-          uri: http://api-user:12063
+          uri: http://info-tpsi.univ-brest.fr:12124
           predicates:
             - Path=/api/auth/register
           filters:
             - StripPrefix=1
 
         - id: auth-login
-          uri: http://api-user:12063
+          uri: http://info-tpsi.univ-brest.fr:12124
           predicates:
             - Path=/api/auth/login
           filters:
             - StripPrefix=1
 
         - id: auth-protected
-          uri: http://api-user:12063
+          uri: http://info-tpsi.univ-brest.fr:12124
           predicates:
             - Path=/api/auth/**
           filters:
