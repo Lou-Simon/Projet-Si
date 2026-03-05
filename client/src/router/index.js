@@ -8,17 +8,21 @@ import ConnexionPage from '@/pages/public/ConnexionPage.vue'
 import InscriptionPage from '@/pages/public/InscriptionPage.vue'
 import AdminPage from '@/pages/admin/AdminPage.vue'
 import AdminArtistsPage from '@/pages/admin/AdminArtistsPage.vue'
+import UsersListPage from '@/pages/admin/UsersListPage.vue'
+import UserProfilePage from '@/pages/public/UserProfilePage.vue'
+import UserEditPage from '@/pages/admin/UserEditPage.vue'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', redirect: '/films' },
-    { path: '/films', name: 'films', component: FilmsPage },
-    { path: '/acteurs-realisateurs', name: 'artists', component: ArtistsPage },
-    { path: '/genres', name: 'genres', component: GenresPage },
-    { path: '/reservations', name: 'reservations', component: ReservationsPage },
-    { path: '/evaluations', name: 'evaluations', component: EvaluationsPage },
-    { path: '/connexion', name: 'connexion', component: ConnexionPage },
+    { path: '/films',                  name: 'films',         component: FilmsPage },
+    { path: '/acteurs-realisateurs',   name: 'artists',       component: ArtistsPage },
+    { path: '/genres',                 name: 'genres',        component: GenresPage },
+    { path: '/reservations',           name: 'reservations',  component: ReservationsPage },
+    { path: '/evaluations',            name: 'evaluations',   component: EvaluationsPage },
+    { path: '/connexion',              name: 'connexion',     component: ConnexionPage },
+    { path: '/inscription',            name: 'inscription',   component: InscriptionPage },
     {
       path: '/deconnexion',
       name: 'deconnexion',
@@ -28,13 +32,11 @@ const router = createRouter({
         return '/connexion'
       }
     },
-    { path: '/inscription', name: 'inscription', component: InscriptionPage },
-    { path: '/admin', name: 'admin', component: AdminPage },
+    { path: '/admin',          name: 'admin',         component: AdminPage },
     { path: '/admin/artistes', name: 'admin-artists', component: AdminArtistsPage },
-
-    { path: '/users',              component: UsersListPage   },  // protégée
-    { path: '/users/:pseudo',      component: UserProfilePage },  // publique
-    { path: '/users/:pseudo/edit', component: UserEditPage    }  // protégée
+    { path: '/users',                  name: 'users',        component: UsersListPage },
+    { path: '/users/:pseudo',          name: 'user-profile', component: UserProfilePage },
+    { path: '/users/:pseudo/edit',     name: 'user-edit',    component: UserEditPage }
   ]
 })
 
