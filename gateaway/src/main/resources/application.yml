@@ -9,24 +9,22 @@ spring:
       routes:
 
         # ===== AUTHENTICATION API =====
-        # Routes publiques (pas de filtre JWT)
         - id: auth-register
-          uri: http://localhost:12063
+          uri: http://api-user:12063
           predicates:
             - Path=/api/auth/register
           filters:
             - StripPrefix=1
 
         - id: auth-login
-          uri: http://localhost:12063
+          uri: http://api-user:12063
           predicates:
             - Path=/api/auth/login
           filters:
             - StripPrefix=1
 
-        # Routes protégées auth
         - id: auth-protected
-          uri: http://localhost:12063
+          uri: http://api-user:12063
           predicates:
             - Path=/api/auth/**
           filters:
@@ -34,7 +32,6 @@ spring:
             - AuthenticationFilter
 
         # ===== USER API =====
-        # Création de compte : publique
         - id: user-create
           uri: http://api-user:12063
           predicates:
@@ -43,7 +40,6 @@ spring:
           filters:
             - StripPrefix=1
 
-        # Lecture d'un profil : publique
         - id: user-get-by-pseudo
           uri: http://api-user:12063
           predicates:
@@ -52,11 +48,27 @@ spring:
           filters:
             - StripPrefix=1
 
-        # Routes protégées (liste, update, delete)
         - id: user-protected
           uri: http://api-user:12063
           predicates:
             - Path=/api/user/**
+          filters:
+            - StripPrefix=1
+            #- AuthenticationFilter
+
+        # ===== SCRAPING API ===== (avant artist-api !)
+        - id: scraping-movies
+          uri: http://api-scrapping:12062
+          predicates:
+            - Path=/api/movies/batch/**
+          filters:
+            - StripPrefix=1
+            #- AuthenticationFilter
+
+        - id: scraping-artists
+          uri: http://api-scrapping:12062
+          predicates:
+            - Path=/api/artists/batch/**
           filters:
             - StripPrefix=1
             #- AuthenticationFilter
@@ -68,10 +80,9 @@ spring:
             - Path=/api/artists/**
           filters:
             - StripPrefix=0
-            # - AuthenticationFilter
+            #- AuthenticationFilter
 
         # ===== REVIEW API =====
-        # Lecture des reviews : publique
         - id: review-read
           uri: http://api-reviews:12064
           predicates:
@@ -80,7 +91,6 @@ spring:
           filters:
             - StripPrefix=0
 
-        # Écriture des reviews : protégée
         - id: review-write
           uri: http://api-reviews:12064
           predicates:
@@ -89,26 +99,9 @@ spring:
             - StripPrefix=0
             - AuthenticationFilter
 
-        # ===== SCRAPING API =====
-        - id: scraping-movies
-          uri: http://api-scrapping:12062
-          predicates:
-            - Path=/api/movies/**
-          filters:
-            - StripPrefix=1
-            #- AuthenticationFilter
-
-        - id: scraping-artists
-          uri: http://api-scrapping:12062
-          predicates:
-            - Path=/api/artists/**
-          filters:
-            - StripPrefix=1
-            #- AuthenticationFilter
-
         # ===== PAYMENT API =====
         - id: payment-api
-          uri: http://localhost:12066
+          uri: http://host.docker.internal:12066
           predicates:
             - Path=/api/payments/**
           filters:
@@ -117,7 +110,7 @@ spring:
 
         # ===== RESERVATION API =====
         - id: reservation-api
-          uri: http://localhost:12067
+          uri: http://host.docker.internal:12067
           predicates:
             - Path=/api/reservations/**
           filters:
@@ -125,18 +118,16 @@ spring:
             - AuthenticationFilter
 
         # ===== POSTER API =====
-        # Lecture des posters : publique
         - id: poster-read
-          uri: http://localhost:12068
+          uri: http://host.docker.internal:12068
           predicates:
             - Path=/api/posters/**
             - Method=GET
           filters:
             - StripPrefix=1
 
-        # Écriture des posters : protégée
         - id: poster-write
-          uri: http://localhost:12068
+          uri: http://host.docker.internal:12068
           predicates:
             - Path=/api/posters/**
           filters:
@@ -145,9 +136,11 @@ spring:
 
       # Configuration CORS globale
       globalcors:
+        add-to-simple-url-handler-mapping: true
         cors-configurations:
           '[/**]':
-            allowedOrigins: "*"
+            allowedOrigins:
+              - "http://localhost:12060"
             allowedMethods:
               - GET
               - POST
@@ -156,11 +149,11 @@ spring:
               - PATCH
               - OPTIONS
             allowedHeaders: "*"
+            allowCredentials: true
 
-# Clé secrète JWT utilisée pour valider les tokens
 jwt:
-  secret: "hashage_from_the_bios is the biography of a legend : the BIOS" # À changer en production, jouer avec excès comporte des risques, appeller le 07 75 10 13 appel non surtaxé.
-  expiration: 86400000 # 24h en millisecondes
+  secret: "hashage_from_the_bios is the biography of a legend : the BIOS"
+  expiration: 86400000
 
 management:
   endpoints:

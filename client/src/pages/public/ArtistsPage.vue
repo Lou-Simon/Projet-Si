@@ -25,6 +25,16 @@ export default {
   components: {
     ArtistCard
   },
+  methods: {
+    normalizeArtist(artist) {
+      return {
+        ...artist,
+        name: artist?.name ?? artist?.nom ?? 'Artiste inconnu',
+        biography: artist?.biography ?? artist?.biographie ?? '',
+        birthDate: artist?.birthDate ?? artist?.dateNaissance ?? null
+      }
+    }
+  },
   data() {
     return {
       artists: [],
@@ -41,11 +51,13 @@ export default {
         return response.json()
       })
       .then((json) => {
-        this.artists = Array.isArray(json)
+        const list = Array.isArray(json)
           ? json
           : Array.isArray(json.artists)
             ? json.artists
             : []
+
+        this.artists = list.map(this.normalizeArtist)
       })
       .catch(() => {
         this.error = 'Erreur de chargement des artistes.'

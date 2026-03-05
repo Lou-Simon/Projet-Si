@@ -19,6 +19,15 @@ const router = createRouter({
     { path: '/reservations', name: 'reservations', component: ReservationsPage },
     { path: '/evaluations', name: 'evaluations', component: EvaluationsPage },
     { path: '/connexion', name: 'connexion', component: ConnexionPage },
+    {
+      path: '/deconnexion',
+      name: 'deconnexion',
+      beforeEnter: () => {
+        localStorage.removeItem('token')
+        localStorage.removeItem('isConnected')
+        return '/connexion'
+      }
+    },
     { path: '/inscription', name: 'inscription', component: InscriptionPage },
     { path: '/admin', name: 'admin', component: AdminPage },
     { path: '/admin/artistes', name: 'admin-artists', component: AdminArtistsPage }
