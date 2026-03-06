@@ -110,7 +110,7 @@ spring:
 
         # ===== PAYMENT API =====
         - id: payment-api
-          uri: http://host.docker.internal:12066
+          uri: http://host.docker.internal:11064
           predicates:
             - Path=/api/payments/**
           filters:
@@ -119,7 +119,7 @@ spring:
 
         # ===== RESERVATION API =====
         - id: reservation-api
-          uri: http://host.docker.internal:12067
+          uri: http://host.docker.internal:11101
           predicates:
             - Path=/api/reservations/**
           filters:
@@ -128,7 +128,7 @@ spring:
 
         # ===== POSTER API =====
         - id: poster-read
-          uri: http://host.docker.internal:12068
+          uri: http://host.docker.internal:11103
           predicates:
             - Path=/api/posters/**
             - Method=GET
@@ -136,7 +136,7 @@ spring:
             - StripPrefix=1
 
         - id: poster-write
-          uri: http://host.docker.internal:12068
+          uri: http://host.docker.internal:11103
           predicates:
             - Path=/api/posters/**
           filters:
