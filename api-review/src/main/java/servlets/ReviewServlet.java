@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -44,29 +45,35 @@ public class ReviewServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    String pathInfo = request.getPathInfo();
 
-        MongoClient mongoClient = getMongoClient();
-        MongoDatabase database = getDatabase(mongoClient);
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    PrintWriter out = response.getWriter();
 
-        MongoCollection<Review> reviewsCollection = database.getCollection("reviews", Review.class);
-        ArrayList<Review> reviews = new ArrayList<>();
+    MongoClient mongoClient = getMongoClient();
+    MongoDatabase database = getDatabase(mongoClient);
+    MongoCollection<Review> reviewsCollection = database.getCollection("reviews", Review.class);
 
-        for (Review review : reviewsCollection.find()) {
-            reviews.add(review);
-        }
+    if (pathInfo == null || pathInfo.equals("/")) {
+        List<Review> reviews = new ArrayList<>();
+        reviewsCollection.find().into(reviews);
+        mongoClient.close();
+        out.print(mapper.writeValueAsString(reviews));
+    } else {
+        String id = pathInfo.substring(1);
+        org.bson.conversions.Bson filtre = com.mongodb.client.model.Filters.eq("_id", id);
+        Review review = reviewsCollection.find(filtre).first();
         mongoClient.close();
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_OK);
-
-        PrintWriter out = response.getWriter();
-        String jsonResponse = mapper.writeValueAsString(reviews);
-        out.print(jsonResponse);
-        out.flush();
+        if (review != null) {
+            out.print(mapper.writeValueAsString(review));
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
     }
+}
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

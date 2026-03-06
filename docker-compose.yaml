@@ -3,32 +3,56 @@ services:
   # ─── DATABASES ───────────────────────────────────────────────
 
   mariadb-artist:
-    image: mariadb:latest
+    image: mariadb:11.6.2-ubi9
     container_name: mariadb-artist
+    restart: unless-stopped
     environment:
       MARIADB_ROOT_PASSWORD: monMotDePasseSuperSecret
       MARIADB_DATABASE: test
     volumes:
       - db_artist:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmonMotDePasseSuperSecret"]
       start_period: 10s
-      interval: 10s
+      interval: 5s
       timeout: 5s
       retries: 5
 
   mariadb-user:
-    image: mariadb:latest
+    image: mariadb:11.6.2-ubi9
     container_name: mariadb-user
+    restart: unless-stopped
     environment:
       MARIADB_ROOT_PASSWORD: monMotDePasseSuperSecret
       MARIADB_DATABASE: test
     volumes:
       - db_user:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmonMotDePasseSuperSecret"]
       start_period: 10s
-      interval: 10s
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mariadb-review:
+    image: mariadb:11.6.2-ubi9
+    container_name: mariadb-review
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: monMotDePasseSuperSecret
+      MARIADB_DATABASE: reviewdb
+    volumes:
+      - db_review:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmonMotDePasseSuperSecret"]
+      start_period: 10s
+      interval: 5s
       timeout: 5s
       retries: 5
 
@@ -37,34 +61,52 @@ services:
   api-artist:
     build: ./api-artist
     container_name: api-artist
+    restart: unless-stopped
     depends_on:
       mariadb-artist:
         condition: service_healthy
     ports:
       - "12064:12064"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-artist:3306/test
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=monMotDePasseSuperSecret
-      - SERVER_PORT=12064
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb-artist:3306/test
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: monMotDePasseSuperSecret
+      SERVER_PORT: 12064
 
   api-user:
     build: ./api-user
     container_name: api-user
+    restart: unless-stopped
     depends_on:
       mariadb-user:
         condition: service_healthy
     ports:
       - "12063:12063"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-user:3306/test
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=monMotDePasseSuperSecret
-      - SERVER_PORT=12063
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb-user:3306/test
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: monMotDePasseSuperSecret
+      SERVER_PORT: 12063
+
+  api-review:
+    build: ./api-review
+    container_name: api-review
+    restart: unless-stopped
+    depends_on:
+      mariadb-review:
+        condition: service_healthy
+    ports:
+      - "12065:8080" # Tomcat expose le 8080 en interne
+    environment:
+      # Variables lues par ton EntityManagerFactory JPA
+      DB_URL: jdbc:mariadb://mariadb-review:3306/reviewdb
+      DB_USER: root
+      DB_PASSWORD: monMotDePasseSuperSecret
 
   api-scrapping:
     build: ./api-scrapping
     container_name: api-scrapping
+    restart: unless-stopped
     ports:
       - "12062:12062"
 
@@ -73,13 +115,16 @@ services:
   gateway:
     build: ./gateaway
     container_name: gateway
+    restart: unless-stopped
     ports:
       - "12061:12061"
     depends_on:
       - api-artist
       - api-user
+      - api-review
       - api-scrapping
 
 volumes:
   db_artist:
   db_user:
+  db_review:

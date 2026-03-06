@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@vod.fr",
+    "password": "admin",
+    "role": "ADMIN",
+    "pseudo": "admin",
+    "nom": "Admin",
+    "prenom": "Super",
+    "age": 30,
+    "adresse": "1 rue de l'Admin, Brest"
+  },
+  {
+    "id": 2,
+    "username": "user",
+    "email": "user@vod.fr",
+    "password": "user",
+    "role": "USER",
+    "pseudo": "user",
+    "nom": "Dupont",
+    "prenom": "Jean",
+    "age": 25,
+    "adresse": "2 rue des Utilisateurs, Brest"
+  }
+]

@@ -7,28 +7,27 @@
 
     <p v-if="loading" class="text-center">Chargement des films...</p>
 
-    <!-- Message serveur down -->
-    <div v-else-if="serverDown" class="alert alert-warning d-flex align-items-center gap-3" role="alert">
-      <span style="font-size: 2rem;">🚧</span>
-      <div>
-        <strong>Service temporairement indisponible</strong><br />
-        Le serveur de films est actuellement inaccessible. Il est peut-être en cours de maintenance ou de démarrage. Veuillez réessayer dans quelques instants.
+    <template v-else>
+      <div v-if="serverDown" class="alert alert-warning d-flex align-items-center gap-3" role="alert">
+          <p>Serveur indisponible</p>        
+         <p> Affichage des données de démonstration.</p>
       </div>
-    </div>
 
-    <p v-else-if="error" class="text-center text-danger">{{ error }}</p>
+      <p v-else-if="error" class="text-center text-danger">{{ error }}</p>
 
-    <div v-else class="row g-3">
-      <div v-for="movie in movies" :key="movie.id || movie.title" class="col-12 col-md-6 col-lg-4">
-        <FilmCard :movie="movie" />
+      <div class="row g-3">
+        <div v-for="movie in movies" :key="movie.id || movie.title" class="col-12 col-md-6 col-lg-4">
+          <FilmCard :movie="movie" />
+        </div>
       </div>
-    </div>
+    </template>
   </section>
 </template>
 
 <script>
 import FilmCard from '@/components/FilmCard.vue'
 import { API_ENDPOINTS } from '@/config/api'
+import mockMovies from '@/data/movies.json'
 
 export default {
   name: 'FilmsPage',
@@ -44,7 +43,7 @@ export default {
   created() {
     fetch(API_ENDPOINTS.movies)
       .then(response => {
-        if (response.status === 500 || response.status === 502 || response.status === 503 || response.status === 504) {
+        if ([500, 502, 503, 504].includes(response.status)) {
           this.serverDown = true
           return null
         }
@@ -60,17 +59,12 @@ export default {
             : []
       })
       .catch(() => {
-        // Timeout réseau ou serveur totalement injoignable
         this.serverDown = true
+        this.movies = mockMovies
       })
       .finally(() => {
         this.loading = false
       })
-  },
-  computed: {
-    nbMovies() {
-      return this.movies.length
-    }
   }
 }
 </script>

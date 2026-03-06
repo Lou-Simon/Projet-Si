@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import HomePage from '@/pages/public/HomePage.vue'
 import FilmsPage from '@/pages/public/FilmsPage.vue'
 import ArtistsPage from '@/pages/public/ArtistsPage.vue'
 import GenresPage from '@/pages/public/GenresPage.vue'
@@ -15,7 +16,7 @@ import UserEditPage from '@/pages/admin/UserEditPage.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', redirect: '/films' },
+    { path: '/', component: HomePage },
     { path: '/films',                  name: 'films',         component: FilmsPage },
     { path: '/acteurs-realisateurs',   name: 'artists',       component: ArtistsPage },
     { path: '/genres',                 name: 'genres',        component: GenresPage },
@@ -32,12 +33,18 @@ const router = createRouter({
         return '/connexion'
       }
     },
-    { path: '/admin',          name: 'admin',         component: AdminPage },
-    { path: '/admin/artistes', name: 'admin-artists', component: AdminArtistsPage },
+    { path: '/admin',          name: 'admin',         component: AdminPage,        meta: { adminOnly: true } },
+    { path: '/admin/artistes', name: 'admin-artists', component: AdminArtistsPage, meta: { adminOnly: true } },
     { path: '/users',                  name: 'users',        component: UsersListPage },
     { path: '/users/:pseudo',          name: 'user-profile', component: UserProfilePage },
     { path: '/users/:pseudo/edit',     name: 'user-edit',    component: UserEditPage }
   ]
+})
+
+router.beforeEach((to) => {
+  if (to.meta.adminOnly && localStorage.getItem('role') !== 'ADMIN') {
+    return '/connexion'
+  }
 })
 
 export default router

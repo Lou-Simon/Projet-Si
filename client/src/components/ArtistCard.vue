@@ -4,23 +4,22 @@
 			<h3 class="h5 card-title mb-0">{{ props.artist.name }}</h3>
 
 			<p class="card-text mb-1">
-				{{ props.artist.biography || 'Aucune biographie disponible.' }}
-			</p>
-
-			<div class="d-flex flex-wrap gap-1 mt-auto">
-				<span class="rounded-pill px-2 py-1 small bg-primary text-light">
-					{{ props.artist.genre || 'Genre inconnu' }}
-				</span>
-			</div>
-
-			<p class="card-text mb-0">
-				<strong>Date de naissance :</strong> {{ formatDate(props.artist.birthDate) }}
+				{{ displayedBiography }}
+				<button
+					v-if="biography.length > 100"
+					class="btn btn-link btn-sm p-0 text-primary"
+					@click="showFull = !showFull"
+				>
+					{{ showFull ? 'voir moins' : 'voir plus' }}
+				</button>
 			</p>
 		</div>
 	</article>
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
+
 const props = defineProps({
 	artist: {
 		type: Object,
@@ -28,8 +27,13 @@ const props = defineProps({
 	}
 })
 
-function formatDate(date) {
-	if (!date) return 'Non renseignée'
-	return new Date(date).toLocaleDateString('fr-FR')
-}
+const showFull = ref(false)
+
+const biography = computed(() => props.artist.biography || 'Aucune biographie disponible.')
+
+const displayedBiography = computed(() =>
+	showFull.value || biography.value.length <= 100
+		? biography.value
+		: biography.value.slice(0, 100) + '...'
+)
 </script>

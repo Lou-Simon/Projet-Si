@@ -1,0 +1,34 @@
+services:
+  reviewdb:
+    image: mariadb:11.6.2-ubi9
+    restart: unless-stopped
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
+      - "db_review:/var/lib/mysql"
+    environment:
+      MARIADB_ROOT_PASSWORD: 1234secure
+      MARIADB_DATABASE: reviewdb
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234secure"]
+      start_period: 10s
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api-review:
+    build: .
+    container_name: api_review_app
+    restart: unless-stopped
+    ports:
+      - "12065:8080"
+    depends_on:
+      reviewdb:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:mariadb://reviewdb:3306/reviewdb
+      DB_USER: root
+      DB_PASSWORD: 1234secure
+
+volumes:
+  db_review:

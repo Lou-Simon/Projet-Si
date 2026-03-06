@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "title": "Inception",
+    "releaseYear": 2010,
+    "director": "Christopher Nolan",
+    "genres": ["Science-Fiction", "Thriller"]
+  },
+  {
+    "id": 2,
+    "title": "Interstellar",
+    "releaseYear": 2014,
+    "director": "Christopher Nolan",
+    "genres": ["Science-Fiction", "Drame"]
+  },
+  {
+    "id": 3,
+    "title": "Le Parrain",
+    "releaseYear": 1972,
+    "director": "Francis Ford Coppola",
+    "genres": ["Drame", "Policier"]
+  },
+  {
+    "id": 4,
+    "title": "Pulp Fiction",
+    "releaseYear": 1994,
+    "director": "Quentin Tarantino",
+    "genres": ["Policier", "Thriller"]
+  },
+  {
+    "id": 5,
+    "title": "Le Seigneur des Anneaux : La Communauté de l'Anneau",
+    "releaseYear": 2001,
+    "director": "Peter Jackson",
+    "genres": ["Fantastique", "Aventure"]
+  },
+  {
+    "id": 6,
+    "title": "Parasite",
+    "releaseYear": 2019,
+    "director": "Bong Joon-ho",
+    "genres": ["Drame", "Thriller"]
+  },
+  {
+    "id": 7,
+    "title": "The Dark Knight",
+    "releaseYear": 2008,
+    "director": "Christopher Nolan",
+    "genres": ["Action", "Policier"]
+  },
+  {
+    "id": 8,
+    "title": "Forrest Gump",
+    "releaseYear": 1994,
+    "director": "Robert Zemeckis",
+    "genres": ["Drame", "Romance"]
+  },
+  {
+    "id": 9,
+    "title": "Matrix",
+    "releaseYear": 1999,
+    "director": "Lana Wachowski",
+    "genres": ["Science-Fiction", "Action"]
+  },
+  {
+    "id": 10,
+    "title": "Amélie Poulain",
+    "releaseYear": 2001,
+    "director": "Jean-Pierre Jeunet",
+    "genres": ["Comédie", "Romance"]
+  },
+  {
+    "id": 11,
+    "title": "Intouchables",
+    "releaseYear": 2011,
+    "director": "Olivier Nakache",
+    "genres": ["Comédie", "Drame"]
+  },
+  {
+    "id": 12,
+    "title": "Spirited Away",
+    "releaseYear": 2001,
+    "director": "Hayao Miyazaki",
+    "genres": ["Animation", "Fantastique"]
+  }
+]
