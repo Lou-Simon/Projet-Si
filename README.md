@@ -1,4 +1,4 @@
-# Projet SI — Plateforme VOD Microservices augmentée par IA + par le Bios
+# Projet SI — Plateforme VOD Microservices
 
 Application de vidéo à la demande construite sur une architecture microservices, permettant de gérer films, artistes, utilisateurs, réservations, paiements et avis.
 
