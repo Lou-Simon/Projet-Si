@@ -49,5 +49,3 @@ docker-compose up --build
 - **Java / Spring Boot** — microservices & gateway (Spring Cloud Gateway)
 - **JWT** — authentification centralisée dans la gateway
 - **Docker / Docker Compose** — orchestration des services
-
-Dédicace au bios, ti é le sang
