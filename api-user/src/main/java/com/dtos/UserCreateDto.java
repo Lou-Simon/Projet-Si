@@ -2,6 +2,9 @@ package com.dtos;
 
 import lombok.*;
 
+/**
+ * Data Transfer Object (DTO) utilisé pour la création d'un nouvel utilisateur.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

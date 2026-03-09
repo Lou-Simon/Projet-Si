@@ -2,6 +2,9 @@ package com.dtos;
 
 import lombok.*;
 
+/**
+ * Data Transfer Object (DTO) utilisé pour la mise à jour des informations d'un utilisateur.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

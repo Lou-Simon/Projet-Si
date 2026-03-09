@@ -5,9 +5,19 @@ import com.dtos.UserDto;
 import com.entities.User;
 import org.springframework.stereotype.Component;
 
+/**
+ * Composant responsable de la conversion entre les entités JPA User
+ * et les différents DTO associés.
+ */
 @Component
 public class UserMapper {
 
+    /**
+     * Convertit une entité User en UserDto.
+     *
+     * @param user L'entité User.
+     * @return Un objet UserDto, ou null.
+     */
     public UserDto toDto(User user) {
         if (user == null) {
             return null;
@@ -21,6 +31,12 @@ public class UserMapper {
                 .build();
     }
 
+    /**
+     * Convertit un UserCreateDto en entité User.
+     *
+     * @param dto L'objet UserCreateDto contenant les données de la requête.
+     * @return L'entité User.
+     */
     public User toEntity(UserCreateDto dto) {
         if (dto == null) {
             return null;
